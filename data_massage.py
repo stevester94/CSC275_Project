@@ -84,25 +84,28 @@ def sum_even_odd(l):
         
 print("Creating list")
 
-with open("tx_1/ramdisk/1589503281-0199382-ec.bin", "rb") as f:
-    b = f.read()
-    items = int(len(b)/4/2)
-    # The strides of an array tell us how many bytes we have to skip in memory to move to the next position along a certain axis.
-    ld = np.ndarray([2,items], dtype=np.float32, buffer=b, strides=(4, 8))
+def get_data(path):
+    with open(path, "rb") as f:
+        b = f.read()
+        items = int(len(b)/4/2)
+        # The strides of an array tell us how many bytes we have to skip in memory to move to the next position along a certain axis.
+        return np.ndarray([1,2,items], dtype=np.float32, buffer=b, strides=(4,4,8))
 
-with open("tx_1/ramdisk/1589503281-0199382-ec.bin", "rb") as f:
-    l = np.fromfile(f, dtype=np.float32, count=-1)
+#ld = get_data("tx_1/ramdisk/1589503281-0199382-ec.bin")
+ld = get_data("tx_1/1589503281-0199382-ec.bin")
+#with open("tx_1/ramdisk/1589503281-0199382-ec.bin", "rb") as f:
+    #l = np.fromfile(f, dtype=np.float32, count=-1)
 
-print(l[:20])
-print(ld[0][:10])
+#print(l[:20])
+#print(ld[0][:10])
 
 # The stride method is clearly fucked
 #print("Even sum: ", sum(l[0::1])) # -2704.9213188713948}
 #print("Odd sum: ", sum(l[1::1]))  # -2704.9634952968518}
 
 # The ndarray is working!
-#print("0 sum: ", sum(ld[0])) # -1353.9999765100147
-#print("1 sum: ", sum(ld[1])) # -1350.92134236138
+#print("0 sum: ", sum(ld[0][0])) # -1353.9999765100147
+#print("1 sum: ", sum(ld[0][1])) # -1350.92134236138
 
 # These are the official numbers. The iterator from file is somehow fucked
 #print("Even sum: ", sum(even_generator(iter(l)))) # -1353.9999765100147
@@ -129,11 +132,7 @@ print(ld[0][:10])
 #t_even = tf.constant(l_even)
 #t_odd = tf.constant(l_odd)
 
-#t = tf.constant(
-    #[
-        #l_2d
-    #]
-#)
+t = tf.constant(ld)
 
 #l_even = None
 #l_odd  = None
