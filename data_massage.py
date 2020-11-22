@@ -91,10 +91,7 @@ def get_data(path):
         # The strides of an array tell us how many bytes we have to skip in memory to move to the next position along a certain axis.
         return np.ndarray([1,2,items], dtype=np.float32, buffer=b, strides=(4,4,8))
 
-#ld = get_data("tx_1/ramdisk/1589503281-0199382-ec.bin")
 ld = get_data("tx_1/1589503281-0199382-ec.bin")
-#with open("tx_1/ramdisk/1589503281-0199382-ec.bin", "rb") as f:
-    #l = np.fromfile(f, dtype=np.float32, count=-1)
 
 #print(l[:20])
 #print(ld[0][:10])
@@ -103,45 +100,41 @@ ld = get_data("tx_1/1589503281-0199382-ec.bin")
 #print("Even sum: ", sum(l[0::1])) # -2704.9213188713948}
 #print("Odd sum: ", sum(l[1::1]))  # -2704.9634952968518}
 
-# The ndarray is working!
-#print("0 sum: ", sum(ld[0][0])) # -1353.9999765100147
-#print("1 sum: ", sum(ld[0][1])) # -1350.92134236138
-
 # These are the official numbers. The iterator from file is somehow fucked
 #print("Even sum: ", sum(even_generator(iter(l)))) # -1353.9999765100147
 #print("Odd sum: ",  sum(odd_generator(iter(l))))  # -1350.92134236138
 #sum_even_odd(l) # -1353.9999765100147 Odd:  -1350.92134236138
 
-#print("Even sum: ", sum(even_generator(float_from_file_iterator("tx_1/ramdisk/1589503281-0199382-ec.bin")))) # -1350.92134236138
-#print("Odd sum: ",  sum(odd_generator(float_from_file_iterator("tx_1/ramdisk/1589503281-0199382-ec.bin"))))  # -1353.9999765100147
-#sum_even_odd(l) # Even:  -1353.9999765100147 Odd:  -1350.92134236138
+# Supposedly these are from the TF docs, but I ripped them from https://towardsdatascience.com/working-with-tfrecords-and-tf-train-example-36d111b3ff4d
+def _bytes_feature(value):
+    """Returns a bytes_list from a string / byte."""
+    # If the value is an eager tensor BytesList won't unpack a string from an EagerTensor.
+    if isinstance(value, type(tf.constant(0))):
+        value = value.numpy() 
+    return tf.train.Feature(bytes_list=tf.train.BytesList(value=[value]))
 
+def _float_feature(value):
+    """Returns a float_list from a float / double."""
+    return tf.train.Feature(float_list=tf.train.FloatList(value=[value]))
 
-#print("iter")
-#iter_sum = sum(numpy_from_file_iterator("tx_1/1589503281-0199382-ec.bin")) #-2704.9213188713948, 1m39.148s
-#print("conventional")
-#conventional_sum =  sum(np.fromfile("tx_1/1589503281-0199382-ec.bin", np.float32, -1)) #-2704.9213188713948, 1m24.416s
-
-#even_gen = even_generator(float_from_file_iterator("tx_1/ramdisk/1589503281-0199382-ec.bin"))
-#odd_gen  = odd_generator(float_from_file_iterator("tx_1/ramdisk/1589503281-0199382-ec.bin"))
-
-#even,odd = deinterleave(float_from_file_iterator("tx_1/ramdisk/1589503281-0199382-ec.bin"))
-#l = list(float_from_file_iterator("tx_1/ramdisk/1589503281-0199382-ec.bin"))
-
-#print("Creating Constant")
-#t_even = tf.constant(l_even)
-#t_odd = tf.constant(l_odd)
+def _int64_feature(value):
+    """Returns an int64_list from a bool / enum / int / uint."""
+    return tf.train.Feature(int64_list=tf.train.Int64List(value=[value]))
 
 t = tf.constant(ld)
 
-#l_even = None
-#l_odd  = None
-#gc.collect()
 
 
-#[
-    #[list(even_gen),list(odd_gen)]
-#])
-    
-#[[2 3]
-#[4 5]], shape=(1,2, 2), dtype=float32)    
+example_features = tf.train.Features(feature={
+    "samples": _bytes_feature(tf.io.serialize_tensor(t)),
+    "device_id": _int64_feature(69),
+    "transmission_id": _int64_feature(420),
+})
+
+example_proto = tf.train.Example(features=example_features)
+
+
+
+file_path = "muh_data"
+with tf.io.TFRecordWriter(file_path) as writer:
+    writer.write(example_proto)
