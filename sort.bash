@@ -1,3 +1,12 @@
+set -eou pipefail
+
+for zip in $(find . |  grep zipped); do
+    unzip $zip
+    rm $zip
+done
+
+sha512sum * > SHA512
+
 for meta in $(find . | grep meta); do
     sha512=$(jq -r '._metadata.global["core:sha512"]' $meta)
     transmitter_id=$(jq -r '._metadata.annotations[0]["wines:transmitter"].ID["Transmitter ID"]' $meta)
