@@ -94,8 +94,8 @@ def get_data(path, num_floats=None):
         # The strides of an array tell us how many bytes we have to skip in memory to move to the next position along a certain axis.
         return np.ndarray([1,2,items], dtype=np.float32, buffer=b, strides=(4,4,8))
 
-print("WARNING: Only reading 10000 floats!")
-ld = get_data(sys.argv[1], 10000)
+print("WARNING: Only reading 100 floats!")
+ld = get_data(sys.argv[1], 100)
 
 #print(l[:20])
 #print(ld[0][:10])
@@ -141,62 +141,51 @@ def serialize_example(feature0, feature1, feature2):
 
   # Create a Features message using tf.train.Example.
 
-    # Ugh it's a really bad naming scheme, but an example is not a single observation. In the docs they parallel arrays 10k long, being
-    # stuffed into a single example
+  # Ugh it's a really bad naming scheme, but an example is not a single observation. In the docs they parallel arrays 10k long, being
+  # stuffed into a single example. But in other examples they do it one by one. I'm assuming it just doesn't really matter.
 
   example_proto = tf.train.Example(features=tf.train.Features(feature=feature))
   return example_proto.SerializeToString()
 
-"""
-Wrapper to use our serialize_example in TF
-"""
-def tf_serialize_example(f0,f1,f2):
-  tf_string = tf.py_function(
-    serialize_example,
-    (f0,f1,f2),  # pass these args to the above function.
-    tf.string)      # the return type is `tf.string`.
-  return tf.reshape(tf_string, ()) # The result is a scalar
-
-# Create a dataset from tensors. This one will have only a single big fuckin observation
-features_dataset = tf.data.Dataset.from_tensor_slices(([t, t], [69, 1337], [420, 8008])) # Note this is how multiple observations would look in the dataset
-#features_dataset = tf.data.Dataset.from_tensor_slices(([t], [69], [420]))
-
-for f0,f1,f2 in features_dataset.take(1):
-  print(f0)
-  print(f1)
-  print(f2)
-
-
-# The serialized version of our dataset. It's just a big fuckin string now
-serialized_features_dataset_1 = features_dataset.map(tf_serialize_example)
 
 # Write it out to file
+# Write the `tf.train.Example` observations to the file.
 filename = 'test.tfrecord_1'
-writer = tf.data.experimental.TFRecordWriter(filename)
-writer.write(serialized_features_dataset_1)
 
-"""
-This is the same fuckin thing, just using a generator
-"""
+with tf.io.TFRecordWriter(filename) as writer:
+    example = serialize_example(t, 69, 420)
+    writer.write(example)
 
-"""
-def generator():
-  for features in features_dataset:
-    yield serialize_example(*features)
-serialized_features_dataset_2 = tf.data.Dataset.from_generator(
-    generator, output_types=tf.string, output_shapes=())
-
-filename = 'test.tfrecord_2'
-writer = tf.data.experimental.TFRecordWriter(filename)
-writer.write(serialized_features_dataset_2)
-"""
-
+    example = serialize_example(t, 8008, 69)
+    writer.write(example)
 
 # Now let's read this fuckin dataset
 filenames = [filename]
 raw_dataset = tf.data.TFRecordDataset(filenames)
 
-for raw_record in raw_dataset.take(1):
+def deserialize_example(raw_record):
+  global k
   example = tf.train.Example()
   example.ParseFromString(raw_record.numpy())
-  print(example)
+
+  tens = tf.io.parse_tensor(example.features.feature["samples"].bytes_list.value[0], np.float32)
+
+  return [tens, example.features.feature["device_id"].int64_list.value[0], example.features.feature["transmission_id"].int64_list.value[0]]
+
+"""
+Wrapper to use our deserialize_example in TF
+"""
+def tf_deserialize_example(raw_record):
+  return tf.py_function(
+    deserialize_example,
+    (raw_record,),  # pass these args to the above function.
+    [tf.float32, tf.int64, tf.int64])      # the return type is `tf.string`.
+
+
+parsed_ds = raw_dataset.map(tf_deserialize_example)
+
+
+for f1,f2,f3 in parsed_ds.take(1):
+    print(f1)
+    print(f2)
+    print(f3)
