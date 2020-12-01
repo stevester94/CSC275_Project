@@ -11,10 +11,9 @@ import sys
 
 
 
-filename = sys.argv[1]
 
 # Now let's read this fuckin dataset
-filenames = [filename]
+filenames = [sys.argv[1], sys.argv[2]]
 raw_dataset = tf.data.TFRecordDataset(filenames)
 
 def deserialize_example(raw_record):
@@ -95,6 +94,9 @@ def sliding_window_generator(parsed_ds, window_size):
 
 # window size of 4999: real    0m12.196s
 windowed_count = 0
+set_of_dev_ids = set()
 for f1,f2 in sliding_window_generator(parsed_ds, 4999):
     windowed_count += 1
+    set_of_dev_ids.add(f2.numpy())
 print(windowed_count)
+print(set_of_dev_ids)

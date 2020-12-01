@@ -6,6 +6,8 @@ import itertools
 import struct
 from array import array
 import gc
+import os
+import json
 
 tf.executing_eagerly()
 
@@ -14,6 +16,8 @@ tf.executing_eagerly()
 # Input: 4+D tensor with shape: batch_shape + (channels, rows, cols)
 # (1,2,N) Where N is the number of complex samples
 
+# we are reading these big ass blobs of IQ, breaking it into slices, and optionally only processing total_num_floats worth
+# As it stands now, we are not reshaping the data in any way
 def get_data(path, _sentinel=None, slice_num_floats=None, total_num_floats=None):
     if _sentinel != None:
         raise Exception("Use kargs")
@@ -41,8 +45,40 @@ def get_data(path, _sentinel=None, slice_num_floats=None, total_num_floats=None)
             ret_list.append(np.ndarray([items], dtype=np.float32, buffer=chunk))
     return ret_list
 
+# (metadata, bin)
+def get_binary_and_metadata_paths(base_path):
+    dir_listing = os.listdir(base_path)
+
+    metadata_file = [f for f in dir_listing if "sigmf-meta" in f]
+    if len(metadata_file) != 1:
+        print("Metadata file not found")
+    metadata_file = os.path.normpath(sys.argv[1] + "/" + metadata_file[0])
+
+    bin_file = [f for f in dir_listing if "bin" in f]
+    if len(bin_file) != 1:
+        print("Binary file not found")
+    bin_file = os.path.normpath(sys.argv[1] + "/" + bin_file[0])
+
+    return (metadata_file, bin_file)
+
+def get_metadata_details_dic(metadata_path):
+    d = {}
+    with open(metadata_path, "r") as f:
+        j = json.load(f)
+        j = j["_metadata"]["annotations"][0]["wines:transmitter"]["ID"]
+
+        if 'Transmitter ID' not in j.keys() or 'Transmission ID' not in j.keys():
+            raise Exception("Required keys not found in metadata")
+        return j
+            
+        
+# Get the IQ file and metadata file from a directory
+metadata_path, binary_path = get_binary_and_metadata_paths(sys.argv[1])
+
+metadata = get_metadata_details_dic(metadata_path)
+
 #ld = get_data(sys.argv[1], slice_num_floats=10000, total_num_floats=100000)
-sliced_arrays = get_data(sys.argv[1], slice_num_floats=10000)
+sliced_arrays = get_data(binary_path, slice_num_floats=10000)
 
 print("Dropping last element so we maintain uniformity")
 del sliced_arrays[-1]
@@ -84,9 +120,9 @@ def serialize_example(feature0, feature1, feature2, feature3):
   example_proto = tf.train.Example(features=tf.train.Features(feature=feature))
   return example_proto.SerializeToString()
 
-filename = 'ramdisk/out_record'
+filename = sys.argv[2]
 with tf.io.TFRecordWriter(filename) as writer:
     for index,a in enumerate(sliced_arrays):
         print("Processing ", index, "/", len(sliced_arrays))
-        example = serialize_example(a, 69, 420, index)
+        example = serialize_example(a, metadata['Transmitter ID'], metadata['Transmission ID'], index)
         writer.write(example)
