@@ -36,9 +36,9 @@ def get_data(path, _sentinel=None, slice_num_floats=None, total_num_floats=None)
         chunk_length=slice_num_floats*4
 
         for chunk in _chunks(buf, chunk_length):
-            items = int(len(chunk)/4/2)
+            items = int(len(chunk)/4)
             # The strides of an array tell us how many bytes we have to skip in memory to move to the next position along a certain axis.
-            ret_list.append(np.ndarray([1,2,items], dtype=np.float32, buffer=chunk, strides=(4,4,8)))
+            ret_list.append(np.ndarray([items], dtype=np.float32, buffer=chunk))
     return ret_list
 
 #ld = get_data(sys.argv[1], slice_num_floats=10000, total_num_floats=100000)
