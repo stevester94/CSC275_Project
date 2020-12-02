@@ -82,7 +82,6 @@ def sliding_window_generator(parsed_ds, window_size):
             window_start += 1
             window_end   += 1
 
-    print("Raise")
     raise StopIteration
 
 # 35245 examples in here
@@ -92,11 +91,32 @@ def sliding_window_generator(parsed_ds, window_size):
     #regular_count += 1
     #print(regular_count)
 
-# window size of 4999: real    0m12.196s
+# window size of 4999: real    0m20.110s
+"""
 windowed_count = 0
 set_of_dev_ids = set()
 for f1,f2 in sliding_window_generator(parsed_ds, 4999):
     windowed_count += 1
     set_of_dev_ids.add(f2.numpy())
+
 print(windowed_count)
+print(set_of_dev_ids)
+
+"""
+
+dataset = tf.data.Dataset.from_generator(
+    lambda: sliding_window_generator(parsed_ds, 4999),
+    (tf.int64, tf.int64),
+    (tf.TensorShape([2,4999]), tf.TensorShape([]))
+)
+
+# 0m42.234s
+# 121350 examples
+dataset = dataset.prefetch(100)
+set_of_dev_ids = set()
+num_in_dataset=0
+for f1,f2 in dataset:
+    num_in_dataset += 1
+    set_of_dev_ids.add(f2.numpy())
+print(num_in_dataset)
 print(set_of_dev_ids)
