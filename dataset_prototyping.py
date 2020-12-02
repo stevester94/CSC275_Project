@@ -92,7 +92,6 @@ def sliding_window_generator(parsed_ds, window_size):
     #print(regular_count)
 
 # window size of 4999: real    0m20.110s
-"""
 windowed_count = 0
 set_of_dev_ids = set()
 for f1,f2 in sliding_window_generator(parsed_ds, 4999):
@@ -101,8 +100,6 @@ for f1,f2 in sliding_window_generator(parsed_ds, 4999):
 
 print(windowed_count)
 print(set_of_dev_ids)
-
-"""
 
 dataset = tf.data.Dataset.from_generator(
     lambda: sliding_window_generator(parsed_ds, 4999),
