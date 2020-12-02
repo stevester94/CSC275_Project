@@ -82,7 +82,7 @@ def build_dataset(filenames, _window_size):
 
     final_dataset = tf.data.Dataset.from_generator(
         lambda: sliding_window_generator(dataset, _window_size),
-        (tf.int64, tf.int64),
+        (tf.float32, tf.int64),
         (tf.TensorShape([2,_window_size]), tf.TensorShape([]))
     )
 
