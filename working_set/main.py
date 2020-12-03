@@ -3,14 +3,15 @@ import sys
 
 import numpy as np
 import tensorflow as tf
-from tensorflow.keras.layers import Reshape,Dense,Dropout,Activation,Flatten, Convolution2D, MaxPooling2D, ZeroPadding2D
+from tensorflow.keras.layers import Reshape,Dense,Dropout,Activation,Flatten, Convolution2D, MaxPooling2D, ZeroPadding2D, Permute
 import tensorflow.keras.models as models
 import tensorflow.keras as keras
 
 from build_dataset import build_dataset,get_num_elements_in_dataset
 
-
-
+min_class_label=0
+max_class_label=10
+num_classes=max_class_label-min_class_label+1
 
 ds = build_dataset(sys.argv[1:], 4999)
 
@@ -31,6 +32,7 @@ print("Top level input shape: ", list(x.shape))
 
 in_shp = list(x.shape[1:])
 print("Functional input shape: ", in_shp)
+dr = 0.5 # dropout rate (%)
 
 model = models.Sequential()
 
@@ -74,7 +76,63 @@ model.add(
     )
 )
 
+model.add(Dropout(dr))
+model.add(ZeroPadding2D((0, 2)))
 
-result = model(x)
+print("Convolution2D (Second) Input Shape", model.output_shape)
+model.add(
+    Convolution2D(filters=80,
+        kernel_size=3, # SM WARNING: Originally 2
+        strides=2,
+        activation="relu",
+        kernel_initializer='glorot_uniform',
+        data_format="channels_first"
+    )
+)
 
-print("Result shape: ", result.shape)
+model.add(Dropout(dr))
+
+
+
+model.add(Flatten())
+print("Flatten Output Shape: ", model.output_shape)
+
+# SM: So the number of units is the output number, input can be anything (as long as one dimensional)
+model.add(
+    # Originally:     Dense(256,activation='relu',init='he_normal',name="dense1")
+    Dense(
+        units=128, # OG 256
+        activation='relu',
+        kernel_initializer='he_normal' # I ASSUME kernel is what was initialized using he_normal
+    )
+)
+model.add(
+    # Originally:     Dense(256,activation='relu',init='he_normal',name="dense1")
+    Dense(
+        units=128, # OG 256
+        activation='relu',
+        kernel_initializer='he_normal' # I ASSUME kernel is what was initialized using he_normal
+    )
+)
+model.add(
+    # Originally:     Dense(256,activation='relu',init='he_normal',name="dense1")
+    Dense(
+        units=128, # OG 256
+        activation='relu',
+        kernel_initializer='he_normal' # I ASSUME kernel is what was initialized using he_normal
+    )
+)
+
+print("Dense (First) Output Shape: ", model.output_shape)
+
+model.add(Dropout(dr))
+model.add(
+    # SM: Weird this did not come with an activation
+    Dense(
+        units=num_classes,
+        kernel_initializer='he_normal')
+)
+model.add(Activation('softmax'))
+model.add(Reshape([num_classes]))
+model.compile(loss='categorical_crossentropy', optimizer='adam')
+model.summary()
