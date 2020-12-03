@@ -13,18 +13,34 @@ min_class_label=0
 max_class_label=10
 num_classes=max_class_label-min_class_label+1
 
-ds = build_dataset(sys.argv[1:], 4999)
 
-for _x,_y in ds.batch(3).take(1):
-    x = _x
-    y = _y
 
 # It works for a single y
-def to_onehot(y, min_y, max_y):
+def to_onehot(x, y, min_y, max_y):
     z = np.zeros([max_y - min_y + 1])
     z[y-min_y] = 1
 
-    return z
+    return x,z
+
+def tf_to_onehot(x,y):
+    return tf.py_function(
+        lambda x,y: to_onehot(x,y,min_class_label, max_class_label),
+        (x,y),
+        [tf.float32, tf.int64]
+    )
+    
+ds = build_dataset(sys.argv[1:], 4999)
+ds = ds.map(tf_to_onehot).shuffle(1000, seed=1337)
+
+#for _x,_y in ds.batch(3).take(1):
+for _x,_y in ds:
+    x = _x
+    y = _y
+
+    #print(x)
+    print(y)
+
+sys.exit(1) 
 
 # [Batches][Channel (I or Q)][samples]
 # <batches><2><window size>
@@ -136,3 +152,31 @@ model.add(Activation('softmax'))
 model.add(Reshape([num_classes]))
 model.compile(loss='categorical_crossentropy', optimizer='adam')
 model.summary()
+
+
+nb_epoch = 100     # number of epochs to train on
+batch_size = 1024  # training batch size (OG 1024)
+
+###########
+# Block 7 #
+###########
+
+# perform training ...
+#   - call the main training loop in keras for our network+dataset
+
+sys.exit(1)
+
+filepath = 'steve.wts.h5'
+
+history = model.fit(
+    X_train,
+    Y_train,
+    batch_size=batch_size,
+    epochs=nb_epoch,
+    verbose=2,
+    validation_data=(X_test, Y_test),
+    callbacks = [
+        keras.callbacks.ModelCheckpoint(filepath, monitor='val_loss', verbose=0, save_best_only=True, mode='auto'),
+        keras.callbacks.EarlyStopping(monitor='val_loss', patience=5, verbose=0, mode='auto')
+    ]
+)
