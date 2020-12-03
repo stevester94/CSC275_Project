@@ -18,7 +18,7 @@ nb_epoch=100
 batch_size=5
 
 window_size=4999
-DATASET_SIZE = 100
+DATASET_SIZE = 100000
 
 
 # It works for a single y
@@ -49,20 +49,22 @@ test_dataset = ds.skip(train_size)
 val_dataset = test_dataset.skip(val_size)
 test_dataset = test_dataset.take(test_size)
 
-train_dataset = train_dataset.batch(batch_size)
-val_dataset   = val_dataset.batch(batch_size)
-test_dataset  = test_dataset.batch(batch_size)
 
 
 #for _x,_y in ds.batch(3).take(1):
-#for _x,_y in train_dataset.batch(3).take(1):
+for _x,_y in train_dataset:
     #x = _x
     #y = _y
 
     #print(x)
-    #print(y)
+    print(_y)
 
-#sys.exit(1) 
+sys.exit(1) 
+
+train_dataset = train_dataset.batch(batch_size)
+val_dataset   = val_dataset.batch(batch_size)
+test_dataset  = test_dataset.batch(batch_size)
+
 
 # [Batches][Channel (I or Q)][samples]
 # <batches><2><window size>
