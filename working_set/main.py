@@ -13,6 +13,12 @@ min_class_label=0
 max_class_label=10
 num_classes=max_class_label-min_class_label+1
 
+dr = 0.5 # dropout rate (%)
+nb_epoch=100
+batch_size=5
+
+window_size=4999
+DATASET_SIZE = 100
 
 
 # It works for a single y
@@ -28,27 +34,41 @@ def tf_to_onehot(x,y):
         (x,y),
         [tf.float32, tf.int64]
     )
-    
-ds = build_dataset(sys.argv[1:], 4999)
-ds = ds.map(tf_to_onehot).shuffle(1000, seed=1337)
+
+# OK Fuck it, we're just going to assume that the underlying dataset is randomized, st that we reliably
+# Pull out a random training/test dataset and not worry about it
+ds = build_dataset(sys.argv[1:], window_size)
+ds = ds.map(tf_to_onehot)
+
+train_size = int(0.7 * DATASET_SIZE)
+val_size = int(0.15 * DATASET_SIZE)
+test_size = int(0.15 * DATASET_SIZE)
+
+train_dataset = ds.take(train_size)
+test_dataset = ds.skip(train_size)
+val_dataset = test_dataset.skip(val_size)
+test_dataset = test_dataset.take(test_size)
+
+train_dataset = train_dataset.batch(batch_size)
+val_dataset   = val_dataset.batch(batch_size)
+test_dataset  = test_dataset.batch(batch_size)
+
 
 #for _x,_y in ds.batch(3).take(1):
-for _x,_y in ds:
-    x = _x
-    y = _y
+#for _x,_y in train_dataset.batch(3).take(1):
+    #x = _x
+    #y = _y
 
     #print(x)
-    print(y)
+    #print(y)
 
-sys.exit(1) 
+#sys.exit(1) 
 
 # [Batches][Channel (I or Q)][samples]
 # <batches><2><window size>
-print("Top level input shape: ", list(x.shape))
 
-in_shp = list(x.shape[1:])
-print("Functional input shape: ", in_shp)
-dr = 0.5 # dropout rate (%)
+#in_shp = list(x.shape[1:])
+in_shp = [2,window_size]
 
 model = models.Sequential()
 
@@ -60,8 +80,12 @@ model.add(
 #<None><channel IE 1><I or Q IE 2><window_size>
 # A none value means it can be any shape
 # This is accomadating our variable batch size
-print("Shape after reshape layer: ", model.output_shape)
+print("Reshape input shape: ", model.input_shape)
+print("Reshape output shape: ", model.output_shape)
 
+#print(in_shp)
+#print(model(x))
+#sys.exit(1)
 
 
 model.add(
@@ -154,9 +178,6 @@ model.compile(loss='categorical_crossentropy', optimizer='adam')
 model.summary()
 
 
-nb_epoch = 100     # number of epochs to train on
-batch_size = 1024  # training batch size (OG 1024)
-
 ###########
 # Block 7 #
 ###########
@@ -164,17 +185,14 @@ batch_size = 1024  # training batch size (OG 1024)
 # perform training ...
 #   - call the main training loop in keras for our network+dataset
 
-sys.exit(1)
-
 filepath = 'steve.wts.h5'
 
 history = model.fit(
-    X_train,
-    Y_train,
-    batch_size=batch_size,
+    train_dataset,
+    #batch_size=batch_size,
     epochs=nb_epoch,
     verbose=2,
-    validation_data=(X_test, Y_test),
+    validation_data=val_dataset,
     callbacks = [
         keras.callbacks.ModelCheckpoint(filepath, monitor='val_loss', verbose=0, save_best_only=True, mode='auto'),
         keras.callbacks.EarlyStopping(monitor='val_loss', patience=5, verbose=0, mode='auto')

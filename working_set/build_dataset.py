@@ -24,7 +24,8 @@ def build_dataset(filenames, _window_size):
 
     See write_dataset.py
     """
-    dataset = tf.data.TFRecordDataset(filenames)
+    # I'm trying to get some interleaving in the files we read
+    dataset = tf.data.TFRecordDataset(filenames, num_parallel_reads=len(filenames))
 
     """
     We need to deserialize these samples.
@@ -85,7 +86,8 @@ def build_dataset(filenames, _window_size):
         (tf.float32, tf.int64),
         (tf.TensorShape([2,_window_size]), tf.TensorShape([]))
     )
-
+    
+    final_dataset = final_dataset.shuffle(10000)
     final_dataset = final_dataset.prefetch(100)
 
     return final_dataset
