@@ -7,9 +7,11 @@ import sys
 # Input: 4+D tensor with shape: batch_shape + (channels, rows, cols)
 # (1,2,N) Where N is the number of complex samples
 
+kek = None
 
 # Now let's read this fuckin dataset
 def build_dataset(filenames, _window_size):
+    global kek
     if len(filenames) == 0:
         raise Exception("Hey, I need some filenames!")
 
@@ -24,9 +26,18 @@ def build_dataset(filenames, _window_size):
 
     See write_dataset.py
     """
+    #FUCK
     # I'm trying to get some interleaving in the files we read
-    dataset = tf.data.TFRecordDataset(filenames, num_parallel_reads=len(filenames))
+    filenames_ds = tf.data.Dataset.from_tensor_slices(filenames)
+    #dataset = tf.data.TFRecordDataset(filenames)
 
+    #dataset = tf.data.Dataset.range(5) # Ok let's just fuck with a simple one for now
+    dataset = filenames_ds.interleave(
+        lambda x: tf.data.TFRecordDataset(x),
+        cycle_length=len(filenames),
+        block_length=1)
+
+    
     """
     We need to deserialize these samples.
     Deserialize into the original tensor, and device id (we drop the rest for now)
@@ -48,6 +59,13 @@ def build_dataset(filenames, _window_size):
         (raw_record,),  # pass these args to the above function.
         [tf.float32, tf.int64])      # [samples], device_id
 
+    """
+    for x in dataset:
+        print(x)
+
+    print("Quitting early")
+    sys.exit(0)
+    """
 
     dataset = dataset.map(tf_deserialize_example)
 
@@ -80,7 +98,10 @@ def build_dataset(filenames, _window_size):
 
         raise StopIteration
 
+    final_dataset=dataset
 
+    print("WARNING: We are dumping the window generator")
+    """
     final_dataset = tf.data.Dataset.from_generator(
         lambda: sliding_window_generator(dataset, _window_size),
         (tf.float32, tf.int64),
@@ -89,6 +110,7 @@ def build_dataset(filenames, _window_size):
     
     final_dataset = final_dataset.shuffle(10000)
     final_dataset = final_dataset.prefetch(100)
+    """
 
     return final_dataset
 
@@ -100,8 +122,49 @@ def get_num_elements_in_dataset(ds):
 
 
 if __name__ == "__main__":
+    # AGH FUCK WHAT
+    """
+    filenames = [10,11,12,13]
+    filename_ds = tf.data.Dataset.from_tensor_slices(filenames)
+    
+    print("OG Dataset cardinality: ", filename_ds.cardinality())
+
+    def parse_fn(filename):
+        print(filename) 
+        return tf.data.Dataset.range(10)
+
+    # This transformation will apply map_func to cycle_length input elements (map_func returns a dataset)
+    # Open iterators on the returned Dataset objects
+    # Cycle through them producing block_length consecutive elements from each iterator
+    # Consume the next input element each time it reaches the end of an iterator.
+
+    # Steve Mackey:
+    
+    # By my explorations: 
+    # map_func returns a dataset, which is built from the input arg. The input arg being a single element from the source dataset
+    # We build <cycle_length> iterators, with each iterator being built from its own input element (it's not like they get grouped up). 
+    #     In other words, its a 1:1 from input item and output dataset
+    # Let iters=those iterators
+    # for i in iters: return i.take(block_length)
+    # Now, how does it work when an iterator gets exhausted? I have no idea, and don't care at this point.
+
+    dataset = filename_ds.interleave(
+        lambda x: parse_fn(x),
+        cycle_length=4, 
+        block_length=1
+    )
+
+    for x in dataset:
+        print(x)
+    
+    print("Quit early")
+    sys.exit(0) 
+    """
+
     filenames = [sys.argv[1], sys.argv[2]]
 
-    ds = build_dataset(filenames)
+    ds = build_dataset(filenames, 4999)
 
+    for x,y in ds:
+        print(y)
     print(get_num_elements_in_dataset(ds))
