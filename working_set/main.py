@@ -9,16 +9,69 @@ import tensorflow.keras as keras
 
 from build_dataset import build_dataset,get_num_elements_in_dataset
 
-min_class_label=0
-max_class_label=10
+min_class_label=9
+max_class_label=13
 num_classes=max_class_label-min_class_label+1
 
 dr = 0.5 # dropout rate (%)
 nb_epoch=100
 batch_size=5
 
-window_size=4999
+window_size=288
 DATASET_SIZE = 100000
+
+paths = [
+    "/kek/Day_1_Before_FFT/Devices_1_through_5/Device_11/tx_6/converted_576floats.protobin",
+    "/kek/Day_1_Before_FFT/Devices_1_through_5/Device_11/tx_3/converted_576floats.protobin",
+    "/kek/Day_1_Before_FFT/Devices_1_through_5/Device_11/tx_1/converted_576floats.protobin",
+    "/kek/Day_1_Before_FFT/Devices_1_through_5/Device_11/tx_10/converted_576floats.protobin",
+    "/kek/Day_1_Before_FFT/Devices_1_through_5/Device_11/tx_7/converted_576floats.protobin",
+    "/kek/Day_1_Before_FFT/Devices_1_through_5/Device_11/tx_4/converted_576floats.protobin",
+    "/kek/Day_1_Before_FFT/Devices_1_through_5/Device_11/tx_2/converted_576floats.protobin",
+    "/kek/Day_1_Before_FFT/Devices_1_through_5/Device_11/tx_5/converted_576floats.protobin",
+    "/kek/Day_1_Before_FFT/Devices_1_through_5/Device_11/tx_8/converted_576floats.protobin",
+    "/kek/Day_1_Before_FFT/Devices_1_through_5/Device_11/tx_9/converted_576floats.protobin",
+    "/kek/Day_1_Before_FFT/Devices_1_through_5/Device_12/tx_6/converted_576floats.protobin",
+    "/kek/Day_1_Before_FFT/Devices_1_through_5/Device_12/tx_3/converted_576floats.protobin",
+    "/kek/Day_1_Before_FFT/Devices_1_through_5/Device_12/tx_1/converted_576floats.protobin",
+    "/kek/Day_1_Before_FFT/Devices_1_through_5/Device_12/tx_10/converted_576floats.protobin",
+    "/kek/Day_1_Before_FFT/Devices_1_through_5/Device_12/tx_7/converted_576floats.protobin",
+    "/kek/Day_1_Before_FFT/Devices_1_through_5/Device_12/tx_4/converted_576floats.protobin",
+    "/kek/Day_1_Before_FFT/Devices_1_through_5/Device_12/tx_2/converted_576floats.protobin",
+    "/kek/Day_1_Before_FFT/Devices_1_through_5/Device_12/tx_5/converted_576floats.protobin",
+    "/kek/Day_1_Before_FFT/Devices_1_through_5/Device_12/tx_8/converted_576floats.protobin",
+    "/kek/Day_1_Before_FFT/Devices_1_through_5/Device_12/tx_9/converted_576floats.protobin",
+    "/kek/Day_1_Before_FFT/Devices_1_through_5/Device_10/tx_6/converted_576floats.protobin",
+    "/kek/Day_1_Before_FFT/Devices_1_through_5/Device_10/tx_3/converted_576floats.protobin",
+    "/kek/Day_1_Before_FFT/Devices_1_through_5/Device_10/tx_1/converted_576floats.protobin",
+    "/kek/Day_1_Before_FFT/Devices_1_through_5/Device_10/tx_10/converted_576floats.protobin",
+    "/kek/Day_1_Before_FFT/Devices_1_through_5/Device_10/tx_7/converted_576floats.protobin",
+    "/kek/Day_1_Before_FFT/Devices_1_through_5/Device_10/tx_4/converted_576floats.protobin",
+    "/kek/Day_1_Before_FFT/Devices_1_through_5/Device_10/tx_2/converted_576floats.protobin",
+    "/kek/Day_1_Before_FFT/Devices_1_through_5/Device_10/tx_5/converted_576floats.protobin",
+    "/kek/Day_1_Before_FFT/Devices_1_through_5/Device_10/tx_8/converted_576floats.protobin",
+    "/kek/Day_1_Before_FFT/Devices_1_through_5/Device_10/tx_9/converted_576floats.protobin",
+    "/kek/Day_1_Before_FFT/Devices_1_through_5/Device_13/tx_6/converted_576floats.protobin",
+    "/kek/Day_1_Before_FFT/Devices_1_through_5/Device_13/tx_3/converted_576floats.protobin",
+    "/kek/Day_1_Before_FFT/Devices_1_through_5/Device_13/tx_1/converted_576floats.protobin",
+    "/kek/Day_1_Before_FFT/Devices_1_through_5/Device_13/tx_10/converted_576floats.protobin",
+    "/kek/Day_1_Before_FFT/Devices_1_through_5/Device_13/tx_7/converted_576floats.protobin",
+    "/kek/Day_1_Before_FFT/Devices_1_through_5/Device_13/tx_4/converted_576floats.protobin",
+    "/kek/Day_1_Before_FFT/Devices_1_through_5/Device_13/tx_2/converted_576floats.protobin",
+    "/kek/Day_1_Before_FFT/Devices_1_through_5/Device_13/tx_5/converted_576floats.protobin",
+    "/kek/Day_1_Before_FFT/Devices_1_through_5/Device_13/tx_8/converted_576floats.protobin",
+    "/kek/Day_1_Before_FFT/Devices_1_through_5/Device_13/tx_9/converted_576floats.protobin",
+    "/kek/Day_1_Before_FFT/Devices_1_through_5/Device_9/tx_6/converted_576floats.protobin",
+    "/kek/Day_1_Before_FFT/Devices_1_through_5/Device_9/tx_3/converted_576floats.protobin",
+    "/kek/Day_1_Before_FFT/Devices_1_through_5/Device_9/tx_1/converted_576floats.protobin",
+    "/kek/Day_1_Before_FFT/Devices_1_through_5/Device_9/tx_10/converted_576floats.protobin",
+    "/kek/Day_1_Before_FFT/Devices_1_through_5/Device_9/tx_7/converted_576floats.protobin",
+    "/kek/Day_1_Before_FFT/Devices_1_through_5/Device_9/tx_4/converted_576floats.protobin",
+    "/kek/Day_1_Before_FFT/Devices_1_through_5/Device_9/tx_2/converted_576floats.protobin",
+    "/kek/Day_1_Before_FFT/Devices_1_through_5/Device_9/tx_5/converted_576floats.protobin",
+    "/kek/Day_1_Before_FFT/Devices_1_through_5/Device_9/tx_8/converted_576floats.protobin",
+    "/kek/Day_1_Before_FFT/Devices_1_through_5/Device_9/tx_9/converted_576floats.protobin",
+]
 
 
 # It works for a single y
@@ -35,10 +88,27 @@ def tf_to_onehot(x,y):
         [tf.float32, tf.int64]
     )
 
-# OK Fuck it, we're just going to assume that the underlying dataset is randomized, st that we reliably
-# Pull out a random training/test dataset and not worry about it
-ds = build_dataset(sys.argv[1:], window_size)
-ds = ds.map(tf_to_onehot)
+ds = build_dataset(paths)
+
+whitelist = tf.constant([9, 10], dtype=tf.int64)
+def tf_filter_fn(_, y):
+    broadcast_equal = tf.math.equal(y, whitelist)
+    return tf.math.count_nonzero(broadcast_equal) > 0
+    
+    
+    #if y == 9 or y == 10:
+        #return True
+    #else: 
+        #return False
+
+
+ds = ds.filter(tf_filter_fn) # We only want device 9 or 10
+#ds = ds.take(DATASET_SIZE)
+#ds = ds.map(tf_to_onehot)
+for _x,_y in ds:
+    print(_y)
+
+sys.exit(1)
 
 train_size = int(0.7 * DATASET_SIZE)
 val_size = int(0.15 * DATASET_SIZE)
@@ -51,13 +121,6 @@ test_dataset = test_dataset.take(test_size)
 
 
 
-#for _x,_y in ds.batch(3).take(1):
-for _x,_y in train_dataset:
-    #x = _x
-    #y = _y
-
-    #print(x)
-    print(_y)
 
 sys.exit(1) 
 

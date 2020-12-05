@@ -1,4 +1,7 @@
 #! /usr/bin/python3
+import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'  # or any {'0', '1', '2'}
+
 import numpy as np
 import tensorflow as tf
 import sys
@@ -154,6 +157,6 @@ if __name__ == "__main__":
 
     ds = build_dataset(sys.argv[1:])
 
-    for x,y in ds:
-        print(y)
+    #for x,y in ds:
+        #print(y)
     print(get_num_elements_in_dataset(ds))
