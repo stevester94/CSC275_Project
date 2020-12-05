@@ -10,12 +10,12 @@ import tensorflow.keras as keras
 from build_dataset import build_dataset,get_num_elements_in_dataset
 
 min_class_label=9
-max_class_label=13
+max_class_label=10
 num_classes=max_class_label-min_class_label+1
 
 dr = 0.5 # dropout rate (%)
 nb_epoch=100
-batch_size=5
+batch_size=100
 
 window_size=288
 DATASET_SIZE = 100000
@@ -94,21 +94,12 @@ whitelist = tf.constant([9, 10], dtype=tf.int64)
 def tf_filter_fn(_, y):
     broadcast_equal = tf.math.equal(y, whitelist)
     return tf.math.count_nonzero(broadcast_equal) > 0
-    
-    
-    #if y == 9 or y == 10:
-        #return True
-    #else: 
-        #return False
-
 
 ds = ds.filter(tf_filter_fn) # We only want device 9 or 10
-#ds = ds.take(DATASET_SIZE)
-#ds = ds.map(tf_to_onehot)
-for _x,_y in ds:
-    print(_y)
-
-sys.exit(1)
+ds = ds.take(DATASET_SIZE)
+ds = ds.map(tf_to_onehot)
+ds = ds.cache(filename="muh_cache") # Now this is pretty fuckin cool. Delete the file to re-cache
+ds = ds.prefetch(DATASET_SIZE)
 
 train_size = int(0.7 * DATASET_SIZE)
 val_size = int(0.15 * DATASET_SIZE)
@@ -118,11 +109,6 @@ train_dataset = ds.take(train_size)
 test_dataset = ds.skip(train_size)
 val_dataset = test_dataset.skip(val_size)
 test_dataset = test_dataset.take(test_size)
-
-
-
-
-sys.exit(1) 
 
 train_dataset = train_dataset.batch(batch_size)
 val_dataset   = val_dataset.batch(batch_size)

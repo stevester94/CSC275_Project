@@ -35,7 +35,7 @@ set -eou pipefail
 #
 #./build_dataset.py /mnt/lebensraum/Day_1_Before_FFT/Devices_1_through_5/Device_10/tx_6/converted* & # Fine
 #./build_dataset.py /mnt/lebensraum/Day_1_Before_FFT/Devices_1_through_5/Device_10/tx_3/converted* & # Fine
-./build_dataset.py /mnt/lebensraum/Day_1_Before_FFT/Devices_1_through_5/Device_10/tx_1/converted* & # Offender!
+#./build_dataset.py /mnt/lebensraum/Day_1_Before_FFT/Devices_1_through_5/Device_10/tx_1/converted* & # Fine now
 #./build_dataset.py /mnt/lebensraum/Day_1_Before_FFT/Devices_1_through_5/Device_10/tx_10/converted* & # Fine
 wait
 echo "Press key to EXIT"
