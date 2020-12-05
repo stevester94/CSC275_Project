@@ -11,6 +11,7 @@ import json
 
 tf.executing_eagerly()
 
+num_floats_in_slice=288*2
 
 # From the homework, we used the following
 # Input: 4+D tensor with shape: batch_shape + (channels, rows, cols)
@@ -78,7 +79,7 @@ metadata_path, binary_path = get_binary_and_metadata_paths(sys.argv[1])
 metadata = get_metadata_details_dic(metadata_path)
 
 #ld = get_data(sys.argv[1], slice_num_floats=10000, total_num_floats=100000)
-sliced_arrays = get_data(binary_path, slice_num_floats=10000)
+sliced_arrays = get_data(binary_path, slice_num_floats=num_floats_in_slice)
 
 print("Dropping last element so we maintain uniformity")
 del sliced_arrays[-1]
@@ -120,7 +121,7 @@ def serialize_example(feature0, feature1, feature2, feature3):
   example_proto = tf.train.Example(features=tf.train.Features(feature=feature))
   return example_proto.SerializeToString()
 
-filename = sys.argv[2]
+filename = sys.argv[1] + "/converted_" + str(num_floats_in_slice) + "floats.protobin"
 with tf.io.TFRecordWriter(filename) as writer:
     for index,a in enumerate(sliced_arrays):
         print("Processing ", index, "/", len(sliced_arrays))
