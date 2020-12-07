@@ -10,7 +10,7 @@ import tensorflow.keras as keras
 from build_dataset import build_dataset,get_num_elements_in_dataset
 
 min_class_label=9
-max_class_label=10
+max_class_label=13
 num_classes=max_class_label-min_class_label+1
 
 dr = 0.5 # dropout rate (%)
@@ -18,7 +18,7 @@ nb_epoch=100
 batch_size=100
 
 window_size=288
-DATASET_SIZE = 100000
+DATASET_SIZE = 1000000
 
 paths = [
     "/kek/Day_1_Before_FFT/Devices_1_through_5/Device_11/tx_6/converted_576floats.protobin",
@@ -81,21 +81,21 @@ def to_onehot(x, y, min_y, max_y):
 
     return x,z
 
-def tf_to_onehot(x,y):
+def tf_to_onehot(samples,device_id,_1,_2):
     return tf.py_function(
         lambda x,y: to_onehot(x,y,min_class_label, max_class_label),
-        (x,y),
+        (samples,device_id),
         [tf.float32, tf.int64]
     )
 
 ds = build_dataset(paths)
 
 whitelist = tf.constant([9, 10], dtype=tf.int64)
-def tf_filter_fn(_, y):
-    broadcast_equal = tf.math.equal(y, whitelist)
+def tf_filter_fn(x, device_id, transmission_id, slice_index):
+    broadcast_equal = tf.math.equal(device_id, whitelist)
     return tf.math.count_nonzero(broadcast_equal) > 0
 
-ds = ds.filter(tf_filter_fn) # We only want device 9 or 10
+#ds = ds.filter(tf_filter_fn) # We only want device 9 or 10
 ds = ds.take(DATASET_SIZE)
 ds = ds.map(tf_to_onehot)
 ds = ds.cache(filename="muh_cache") # Now this is pretty fuckin cool. Delete the file to re-cache
@@ -237,7 +237,6 @@ model.summary()
 #   - call the main training loop in keras for our network+dataset
 
 filepath = 'steve.wts.h5'
-
 history = model.fit(
     train_dataset,
     #batch_size=batch_size,
@@ -249,3 +248,17 @@ history = model.fit(
         keras.callbacks.EarlyStopping(monitor='val_loss', patience=5, verbose=0, mode='auto')
     ]
 )
+
+# we re-load the best weights once training is finished
+model.load_weights(filepath)
+
+
+
+###########
+# Block 8 #
+###########
+
+# Show simple version of performance
+# SM: this is "Scalar test loss"
+score = model.evaluate(test_dataset, verbose=0)
+print(score)

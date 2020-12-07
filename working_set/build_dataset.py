@@ -51,6 +51,8 @@ def build_dataset(filenames):
     dataset = filenames_ds.interleave(
         lambda x: tf.data.TFRecordDataset(x),
         cycle_length=len(filenames),
+        num_parallel_calls=tf.data.experimental.AUTOTUNE,
+        deterministic=True,
         block_length=1)
 
     
@@ -59,12 +61,15 @@ def build_dataset(filenames):
     Deserialize into the original tensor, and device id (we drop the rest for now)
     """
     def deserialize_example(raw_record):
-      example = tf.train.Example()
-      example.ParseFromString(raw_record.numpy())
+        example = tf.train.Example()
+        example.ParseFromString(raw_record.numpy())
 
-      tens = tf.io.parse_tensor(example.features.feature["samples"].bytes_list.value[0], np.float32)
+        tensor          = tf.io.parse_tensor(example.features.feature["samples"].bytes_list.value[0], np.float32)
+        device_id       = example.features.feature["device_id"].int64_list.value[0]
+        transmission_id = example.features.feature["transmission_id"].int64_list.value[0]
+        slice_index     = example.features.feature["slice_index"].int64_list.value[0]
 
-      return [tens, example.features.feature["device_id"].int64_list.value[0]]
+        return [tensor, device_id, transmission_id, slice_index]
 
     """
     Wrapper to use our deserialize_example in TF
@@ -73,7 +78,7 @@ def build_dataset(filenames):
       return tf.py_function(
         deserialize_example,
         (raw_record,),  # pass these args to the above function.
-        [tf.float32, tf.int64])      # [samples], device_id
+        [tf.float32, tf.int64, tf.int64, tf.int64])      # [samples], device_id, transmission_id, slice_index
 
     dataset = dataset.map(tf_deserialize_example)
 
