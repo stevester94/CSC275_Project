@@ -7,6 +7,8 @@ from tensorflow.keras.layers import Reshape,Dense,Dropout,Activation,Flatten, Co
 import tensorflow.keras.models as models
 import tensorflow.keras as keras
 
+import matplotlib.pyplot as plt
+
 from build_dataset import build_dataset,get_num_elements_in_dataset
 
 min_class_label=9
@@ -72,6 +74,18 @@ paths = [
     "/kek/Day_1_Before_FFT/Devices_1_through_5/Device_9/tx_8/converted_576floats.protobin",
     "/kek/Day_1_Before_FFT/Devices_1_through_5/Device_9/tx_9/converted_576floats.protobin",
 ]
+
+def plot_confusion_matrix(cm, title='Confusion matrix', cmap=plt.cm.Blues, labels=[]):
+    plt.imshow(cm, interpolation='nearest', cmap=cmap)
+    plt.title(title)
+    plt.colorbar()
+    tick_marks = np.arange(len(labels))
+    plt.xticks(tick_marks, labels, rotation=45)
+    plt.yticks(tick_marks, labels)
+    plt.tight_layout()
+    plt.ylabel('True label')
+    plt.xlabel('Predicted label')
+
 
 
 # It works for a single y
@@ -237,6 +251,8 @@ model.summary()
 #   - call the main training loop in keras for our network+dataset
 
 filepath = 'steve.wts.h5'
+
+"""
 history = model.fit(
     train_dataset,
     #batch_size=batch_size,
@@ -248,6 +264,7 @@ history = model.fit(
         keras.callbacks.EarlyStopping(monitor='val_loss', patience=5, verbose=0, mode='auto')
     ]
 )
+"""
 
 # we re-load the best weights once training is finished
 model.load_weights(filepath)
@@ -260,5 +277,63 @@ model.load_weights(filepath)
 
 # Show simple version of performance
 # SM: this is "Scalar test loss"
-score = model.evaluate(test_dataset, verbose=0)
-print(score)
+#score = model.evaluate(test_dataset, verbose=0)
+#print(score)
+
+
+#####################
+# Plot Confusion
+#####################
+# Plot confusion matrix
+
+# Desn't do anything dumb with the batch/shapes
+print("Warning we are fudging the test dataset")
+test_dataset = test_dataset.take(100)
+
+test_Y_hat = model.predict(test_dataset)
+conf = np.zeros([num_classes,num_classes])
+confnorm = np.zeros([num_classes,num_classes])
+
+counter = 0
+correct = 0
+incorrect = 0
+for x,y in test_dataset.unbatch(): # Batching was making this weird
+    
+    actual    = int(np.argmax(y))
+    predicted = int(np.argmax(test_Y_hat[counter,:]))
+
+    """
+    print("===========================================")
+    print("y: ", y)
+    print("Actual: ", actual)
+    print("y_hat: ", test_Y_hat[counter,:])
+    print("Predicted: ", predicted)
+    sys.exit(1)
+    """
+
+    if actual == predicted:
+        correct += 1
+    else:
+        incorrect += 1
+    
+    #print("x: ", x)
+    #print("y: ", y)
+    #print("Actual: ", actual, " Predicted: ", predicted)
+
+    conf[actual, predicted] = conf[actual, predicted] + 1 
+
+    counter += 1
+
+print("Correct: ", correct)
+print("Incorrect: ", incorrect)
+print("Accuracy: ", correct / (correct + incorrect))
+print(conf)
+print(confnorm)
+
+
+for i in range(0,num_classes):
+    confnorm[i,:] = conf[i,:] / np.sum(conf[i,:])
+
+plot_confusion_matrix(confnorm, labels=list(range(min_class_label, max_class_label+1)))
+plt.savefig("confusion.png")
+#plt.figure()
