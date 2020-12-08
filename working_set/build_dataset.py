@@ -6,6 +6,8 @@ import numpy as np
 import tensorflow as tf
 import sys
 
+WINDOW_SIZE=288
+
 # From the homework, we used the following
 # Input: 4+D tensor with shape: batch_shape + (channels, rows, cols)
 # (1,2,N) Where N is the number of complex samples
@@ -171,11 +173,11 @@ def build_debug_set(min_dev_id, max_dev_id, dataset_size, window_size):
 def build_auto_encoder_ds(paths):
     def tf_combine_iq(example_1,example_2):
         return tf.py_function(
-            lambda x,y: (tf.reshape(x, (2,int(x.shape[0]/2))), tf.reshape(y, (2,int(y.shape[0]/2)))),
+            lambda x,y: (tf.reshape(x, (2,WINDOW_SIZE)), tf.reshape(y, (2,WINDOW_SIZE))),
             (example_1[0],example_2[0]),
             [tf.float32, tf.float32]
         )
-    datasets = []
+    dataset = None
     for f1, f2 in paths:
         d1 = build_dataset([f1])
         d2 = build_dataset([f2])
@@ -186,7 +188,12 @@ def build_auto_encoder_ds(paths):
 
         ds = ds.map(tf_combine_iq)
 
-        datasets.append(ds)
+        if dataset == None:
+            dataset = ds
+        else:
+            dataset = dataset.concatenate(ds)
+    
+    return dataset
 
 if __name__ == "__main__":
     build_auto_encoder_ds([
