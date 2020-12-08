@@ -9,9 +9,10 @@ import tensorflow.keras as keras
 
 import matplotlib.pyplot as plt
 
-from build_dataset import build_dataset,get_num_elements_in_dataset
+from build_dataset import build_dataset,get_num_elements_in_dataset, build_debug_set
 
 min_class_label=9
+#max_class_label=10
 max_class_label=13
 num_classes=max_class_label-min_class_label+1
 
@@ -20,7 +21,9 @@ nb_epoch=100
 batch_size=100
 
 window_size=288
-DATASET_SIZE = 1000000
+DATASET_SIZE = 100000
+#DATASET_SIZE = 1000000
+# Between two sets we have 1053403
 
 paths = [
     "/kek/Day_1_Before_FFT/Devices_1_through_5/Device_11/tx_6/converted_576floats.protobin",
@@ -75,6 +78,19 @@ paths = [
     "/kek/Day_1_Before_FFT/Devices_1_through_5/Device_9/tx_9/converted_576floats.protobin",
 ]
 
+# 1053403 examples
+train_paths = [
+    "/kek/Day_1_Before_FFT/Devices_1_through_5/Device_9/tx_1/converted_576floats.protobin",
+    "/kek/Day_1_Before_FFT/Devices_1_through_5/Device_10/tx_1/converted_576floats.protobin",
+]
+
+# 736348 examples
+test_paths = [
+    "/kek/Day_1_Before_FFT/Devices_1_through_5/Device_9/tx_2/converted_576floats.protobin",
+    "/kek/Day_1_Before_FFT/Devices_1_through_5/Device_10/tx_2/converted_576floats.protobin",
+]
+
+
 def plot_confusion_matrix(cm, title='Confusion matrix', cmap=plt.cm.Blues, labels=[]):
     plt.imshow(cm, interpolation='nearest', cmap=cmap)
     plt.title(title)
@@ -102,7 +118,20 @@ def tf_to_onehot(samples,device_id,_1,_2):
         [tf.float32, tf.int64]
     )
 
-ds = build_dataset(paths)
+
+
+ds = build_dataset(train_paths)
+test_dataset = build_dataset(test_paths)
+
+# print("Original num in train set: ", get_num_elements_in_dataset(ds))
+# print("Original num in test set: ", get_num_elements_in_dataset(test_dataset))
+
+
+"""
+print("Using debug set")
+ds = build_debug_set(min_class_label, max_class_label, DATASET_SIZE, window_size)
+"""
+
 
 whitelist = tf.constant([9, 10], dtype=tf.int64)
 def tf_filter_fn(x, device_id, transmission_id, slice_index):
@@ -112,21 +141,47 @@ def tf_filter_fn(x, device_id, transmission_id, slice_index):
 #ds = ds.filter(tf_filter_fn) # We only want device 9 or 10
 ds = ds.take(DATASET_SIZE)
 ds = ds.map(tf_to_onehot)
-ds = ds.cache(filename="muh_cache") # Now this is pretty fuckin cool. Delete the file to re-cache
+ds = ds.cache(filename="train_cache") # Now this is pretty fuckin cool. Delete the file to re-cache
+# ds = ds.cache()
 ds = ds.prefetch(DATASET_SIZE)
 
-train_size = int(0.7 * DATASET_SIZE)
+test_dataset = test_dataset.map(tf_to_onehot)
+test_dataset = test_dataset.cache(filename="test_cache") # Now this is pretty fuckin cool. Delete the file to re-cache
+# ds = ds.cache()
+test_dataset = test_dataset.prefetch(DATASET_SIZE)
+
+
+"""
+for x,y in ds:
+    print(x)
+    print(y)
+
+sys.exit(1)
+"""
+
+# train_size = int(0.7 * DATASET_SIZE)
 val_size = int(0.15 * DATASET_SIZE)
 test_size = int(0.15 * DATASET_SIZE)
 
-train_dataset = ds.take(train_size)
-test_dataset = ds.skip(train_size)
-val_dataset = test_dataset.skip(val_size)
+train_dataset = ds.take(DATASET_SIZE)
 test_dataset = test_dataset.take(test_size)
+val_dataset = test_dataset.skip(test_size)
+val_dataset = test_dataset.take(val_size)
+
+print("Effective num in train set: ", get_num_elements_in_dataset(ds)) # 100000
+print("Effective num in test set: ", get_num_elements_in_dataset(test_dataset)) #15000
+print("Effective num in val set: ", get_num_elements_in_dataset(val_dataset)) # 721348 lol what
 
 train_dataset = train_dataset.batch(batch_size)
 val_dataset   = val_dataset.batch(batch_size)
 test_dataset  = test_dataset.batch(batch_size)
+
+
+#print("train_dataset cardinality: ", get_num_elements_in_dataset(train_dataset))
+#print("val_dataset cardinality: ", get_num_elements_in_dataset(val_dataset))
+#print("test_dataset cardinality: ", get_num_elements_in_dataset(test_dataset))
+
+#sys.exit(1)
 
 
 # [Batches][Channel (I or Q)][samples]
@@ -250,22 +305,23 @@ model.summary()
 # perform training ...
 #   - call the main training loop in keras for our network+dataset
 
+
 filepath = 'steve.wts.h5'
 
-"""
-history = model.fit(
-    train_dataset,
-    #batch_size=batch_size,
-    epochs=nb_epoch,
-    verbose=2,
-    validation_data=val_dataset,
-    callbacks = [
-        keras.callbacks.ModelCheckpoint(filepath, monitor='val_loss', verbose=0, save_best_only=True, mode='auto'),
-        keras.callbacks.EarlyStopping(monitor='val_loss', patience=5, verbose=0, mode='auto')
-    ]
-)
-"""
-
+if len(sys.argv) == 1 or (len(sys.argv) > 1 and sys.argv[1] != "test"):
+    history = model.fit(
+        train_dataset,
+        #batch_size=batch_size,
+        epochs=nb_epoch,
+        verbose=2,
+        validation_data=val_dataset,
+        callbacks = [
+            keras.callbacks.ModelCheckpoint(filepath, monitor='val_loss', verbose=0, save_best_only=True, mode='auto'),
+            keras.callbacks.EarlyStopping(monitor='val_loss', patience=5, verbose=0, mode='auto')
+        ]
+    )
+else:
+    print("Skipping training and doing testing only")
 # we re-load the best weights once training is finished
 model.load_weights(filepath)
 
@@ -287,8 +343,8 @@ model.load_weights(filepath)
 # Plot confusion matrix
 
 # Desn't do anything dumb with the batch/shapes
-print("Warning we are fudging the test dataset")
-test_dataset = test_dataset.take(100)
+# print("Warning we are fudging the test dataset")
+# test_dataset = test_dataset.take(100)
 
 test_Y_hat = model.predict(test_dataset)
 conf = np.zeros([num_classes,num_classes])
@@ -324,15 +380,14 @@ for x,y in test_dataset.unbatch(): # Batching was making this weird
 
     counter += 1
 
+for i in range(0,num_classes):
+    confnorm[i,:] = conf[i,:] / np.sum(conf[i,:])
+
 print("Correct: ", correct)
 print("Incorrect: ", incorrect)
 print("Accuracy: ", correct / (correct + incorrect))
 print(conf)
 print(confnorm)
-
-
-for i in range(0,num_classes):
-    confnorm[i,:] = conf[i,:] / np.sum(conf[i,:])
 
 plot_confusion_matrix(confnorm, labels=list(range(min_class_label, max_class_label+1)))
 plt.savefig("confusion.png")

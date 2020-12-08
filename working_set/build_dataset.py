@@ -132,36 +132,82 @@ def get_num_elements_in_dataset(ds):
         count += 1
     return count
 
+def build_debug_set(min_dev_id, max_dev_id, dataset_size, window_size):
+    class k:
+        def __init__(self, val):
+            self.val = val
+        
+        def _generator(self):
+            while True:
+                yield (
+                    tf.constant(np.full((2,288), fill_value=self.val, dtype=np.float32),dtype=tf.float32),
+                    tf.constant(self.val, dtype=tf.int64), # Device ID
+                    tf.constant(69, dtype=tf.int64),
+                    tf.constant(69, dtype=tf.int64)
+                )
+
+    datasets = []
+    for device_id in range(min_dev_id, max_dev_id+1):
+        jej = k(device_id)
+        gen = jej._generator
+        d = tf.data.Dataset.from_generator(
+            gen,
+            (tf.float32, tf.int64,tf.int64,tf.int64),
+            (tf.TensorShape([2,window_size]), tf.TensorShape([]), tf.TensorShape([]), tf.TensorShape([]))
+        ).take(1) 
+
+        datasets.append(d)
+
+
+    ds = datasets[0]
+    for d in datasets[1:]:
+        ds = ds.concatenate(d)
+    ds = ds.cache()
+    ds = ds.repeat(dataset_size)
+
+    return ds
+
+# Paths should be a list of twoples, with the pairs corresponding to day one and day two for a given device and transmission id
+def build_auto_encoder_ds(paths):
+    def combine_iq(_1, _2):
+        return (_1, _2)
+
+    def tf_combine_iq(example_1,example_2):
+        return tf.py_function(
+            lambda x,y: (x,y),
+            (example_1[0],example_2[0]),
+            [tf.float32, tf.float32]
+        )
+    datasets = []
+    for f1, f2 in paths:
+        d1 = build_dataset([f1])
+        d2 = build_dataset([f2])
+        ds = tf.data.Dataset.zip((d1, d2))
+
+        for _1, _2 in ds.take(1):
+            print(_1)
+            print(_2)
+
+        # sys.exit(1)
+
+        ds = ds.map(tf_combine_iq)
+
+        for _1, _2 in ds.take(1):
+            print(_1.shape)
+
+            
+
+
+
+
+
+
+
 
 if __name__ == "__main__":
-    # AGH FUCK WHAT
-    """
-    filenames = [10,11,12,13]
-    filename_ds = tf.data.Dataset.from_tensor_slices(filenames)
-    
-    print("OG Dataset cardinality: ", filename_ds.cardinality())
-
-    def parse_fn(filename):
-        print(filename) 
-        return tf.data.Dataset.range(10)
-
-
-    dataset = filename_ds.interleave(
-        lambda x: parse_fn(x),
-        cycle_length=4, 
-        block_length=1
-    )
-
-    for x in dataset:
-        print(x)
-    
-    print("Quit early")
-    sys.exit(0) 
-    """
-    filenames = sys.argv[1:]
-
-    ds = build_dataset(sys.argv[1:])
-
-    #for x,y in ds:
-        #print(y)
-    print(get_num_elements_in_dataset(ds))
+    build_auto_encoder_ds([
+        (
+            "/mnt/lebensraum/Day_2_Before_FFT/Device_9/tx_1/converted_576floats.protobin",
+            "/mnt/lebensraum/Day_1_Before_FFT/Devices_1_through_5/Device_9/tx_1/converted_576floats.protobin"
+        ),
+    ])
