@@ -84,12 +84,27 @@ train_paths = [
     "/kek/Day_1_Before_FFT/Devices_1_through_5/Device_10/tx_1/converted_576floats.protobin",
 ]
 
+
+
 # 736348 examples
 test_paths = [
     "/kek/Day_1_Before_FFT/Devices_1_through_5/Device_9/tx_2/converted_576floats.protobin",
     "/kek/Day_1_Before_FFT/Devices_1_through_5/Device_10/tx_2/converted_576floats.protobin",
 ]
 
+
+##################
+# Equalized sets #
+##################
+train_paths = [
+    "/kek/Day_1_Equalized/Device_9/tx_1/converted_576floats.protobin",
+    "/kek/Day_1_Equalized/Device_10/tx_1/converted_576floats.protobin",
+]
+
+test_paths = [
+    "/kek/Day_1_Equalized/Device_9/tx_2/converted_576floats.protobin",
+    "/kek/Day_1_Equalized/Device_10/tx_2/converted_576floats.protobin",
+]
 
 def plot_confusion_matrix(cm, title='Confusion matrix', cmap=plt.cm.Blues, labels=[]):
     plt.imshow(cm, interpolation='nearest', cmap=cmap)

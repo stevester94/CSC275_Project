@@ -169,12 +169,9 @@ def build_debug_set(min_dev_id, max_dev_id, dataset_size, window_size):
 
 # Paths should be a list of twoples, with the pairs corresponding to day one and day two for a given device and transmission id
 def build_auto_encoder_ds(paths):
-    def combine_iq(_1, _2):
-        return (_1, _2)
-
     def tf_combine_iq(example_1,example_2):
         return tf.py_function(
-            lambda x,y: (x,y),
+            lambda x,y: (tf.reshape(x, (2,int(x.shape[0]/2))), tf.reshape(y, (2,int(y.shape[0]/2)))),
             (example_1[0],example_2[0]),
             [tf.float32, tf.float32]
         )
@@ -182,27 +179,14 @@ def build_auto_encoder_ds(paths):
     for f1, f2 in paths:
         d1 = build_dataset([f1])
         d2 = build_dataset([f2])
+
+        # The number of elements in the resulting dataset is the same as
+        # the size of the smallest dataset in `datasets`.
         ds = tf.data.Dataset.zip((d1, d2))
-
-        for _1, _2 in ds.take(1):
-            print(_1)
-            print(_2)
-
-        # sys.exit(1)
 
         ds = ds.map(tf_combine_iq)
 
-        for _1, _2 in ds.take(1):
-            print(_1.shape)
-
-            
-
-
-
-
-
-
-
+        datasets.append(ds)
 
 if __name__ == "__main__":
     build_auto_encoder_ds([
