@@ -15,9 +15,9 @@ DROPOUT_RATE = 0.5 # DROPOUT_RATEopout rate (%)
 NUM_EPOCHS=100
 BATCH_SIZE=100
 
-TRAIN_DATASET_SIZE = 65691
-TEST_DATASET_SIZE = 21648
 WINDOW_SIZE = 288
+prefetch_size=1000
+VALIDATION_RATIO=0.15
 
 # 65691 examples
 train_paths = [
@@ -33,6 +33,7 @@ test_paths = [
 ]
 
 def train_auto_encoder(model, weights_path, train_paths, test_paths):
+    """
     ds = build_auto_encoder_ds(train_paths)
     test_dataset = build_auto_encoder_ds(test_paths)
 
@@ -55,6 +56,27 @@ def train_auto_encoder(model, weights_path, train_paths, test_paths):
     train_dataset = train_dataset.batch(BATCH_SIZE)
     val_dataset   = val_dataset.batch(BATCH_SIZE)
     test_dataset  = test_dataset.batch(BATCH_SIZE)
+    """
+    train_dataset = build_auto_encoder_ds(train_paths)
+    test_dataset = build_auto_encoder_ds(test_paths)
+
+    #train_dataset = train_dataset.filter(tf_filter_fn) # We only want device 9 or 10
+    train_dataset = train_dataset.cache(filename="auto_encoder_train_cache") # Now this is pretty fuckin cool. Delete the file to re-cache
+    
+
+    test_dataset = test_dataset.cache(filename="auto_encoder_test_cache") # Now this is pretty fuckin cool. Delete the file to re-cache
+    TEST_DATASET_SIZE = get_num_elements_in_dataset(test_dataset)
+
+    train_dataset = train_dataset.prefetch(prefetch_size)
+    test_dataset = test_dataset.prefetch(prefetch_size)
+
+    # validation set comes from the test set
+    val_size = int(VALIDATION_RATIO * TEST_DATASET_SIZE)
+    val_dataset = test_dataset.take(val_size)
+
+    # Build our batches
+    train_dataset = train_dataset.batch(BATCH_SIZE)
+    val_dataset   = val_dataset.batch(BATCH_SIZE)
 
     history = model.fit(
         train_dataset,
@@ -85,7 +107,8 @@ def build_model():
         Dense(
             units=128, # OG 256
             activation='relu',
-            kernel_initializer='he_normal' # I ASSUME kernel is what was initialized using he_normal
+            kernel_initializer='he_normal', # I ASSUME kernel is what was initialized using he_normal
+            name="auto_encoder_1"
         )
     )
     model.add(
@@ -93,7 +116,8 @@ def build_model():
         Dense(
             units=128, # OG 256
             activation='relu',
-            kernel_initializer='he_normal' # I ASSUME kernel is what was initialized using he_normal
+            kernel_initializer='he_normal', # I ASSUME kernel is what was initialized using he_normal
+            name="auto_encoder_2"
         )
     )
     model.add(
@@ -101,7 +125,8 @@ def build_model():
         Dense(
             units=128, # OG 256
             activation='relu',
-            kernel_initializer='he_normal' # I ASSUME kernel is what was initialized using he_normal
+            kernel_initializer='he_normal', # I ASSUME kernel is what was initialized using he_normal
+            name="auto_encoder_3"
         )
     )
 
@@ -109,22 +134,21 @@ def build_model():
         # SM: Weird this did not come with an activation
         Dense(
             units=2*WINDOW_SIZE,
-            kernel_initializer='he_normal')
+            kernel_initializer='he_normal',
+            name="auto_encoder_4"
+        )
     )
     # model.add(Activation('softmax'))
-    model.add(Reshape([2, WINDOW_SIZE]))
+    model.add(Reshape([2, WINDOW_SIZE], name="auto_encoder_5"))
     model.compile(loss='categorical_crossentropy', optimizer='adam')
 
     return model
 
 def test_model(model, test_paths):
-    test_dataset = build_auto_encoder_ds(test_paths)
-
+    test_dataset = build_auto_encoder_ds(test_paths)   
     test_dataset = test_dataset.cache(filename="auto_encoder_test_cache") # Now this is pretty fuckin cool. Delete the file to re-cache
-    test_dataset = test_dataset.prefetch(TEST_DATASET_SIZE)
-    test_size = int(0.85 * TEST_DATASET_SIZE)
-    test_dataset = test_dataset.take(test_size)
-    test_dataset  = test_dataset.batch(BATCH_SIZE)
+    test_dataset = test_dataset.prefetch(prefetch_size)
+
 
     score = model.evaluate(test_dataset, verbose=0)
     print(score)
