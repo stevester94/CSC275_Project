@@ -1,5 +1,5 @@
 #! /usr/bin/python3
-import sys
+import sys, os
 
 import numpy as np
 import tensorflow as tf
@@ -16,49 +16,82 @@ min_class_label=9
 #max_class_label=10
 max_class_label=13
 num_classes=max_class_label-min_class_label+1
-whitelist = tf.constant([9, 10], dtype=tf.int64) # Which devices we want in our dataset
+# whitelist = tf.constant([9, 10], dtype=tf.int64) # Which devices we want in our dataset
 
 dr = 0.5 # dropout rate (%)
 nb_epoch=100
+
+if nb_epoch < 100:
+    print("AGGGGGGGGGGGGGGGGGGGGHHHHHHHHHHHHHHHHHHHHHHHHHHHH")
+    print("RUNNING WITH SUPER LOW EPOCHS!")
+    print("AGGGGGGGGGGGGGGGGGGGGHHHHHHHHHHHHHHHHHHHHHHHHHHHH")
+
 batch_size=100
 
 window_size=288
 prefetch_size=1000
-VALIDATION_RATIO=0.15
+VALIDATION_RATIO=0.5 # Percent of the test set
 
 WEIGHTS_NAME="classifier.wts.h5"
 TEST_CACHE_NAME="classifier_test_cache"
 TRAIN_CACHE_NAME="classifier_train_cache"
 
-# 378798 examples
 train_paths = [
-    "/mnt/lebensraum/Day_1_Equalized/Device_10/tx_1/converted_576floats.protobin",
-    "/mnt/lebensraum/Day_1_Equalized/Device_10/tx_2/converted_576floats.protobin",
-    "/mnt/lebensraum/Day_1_Equalized/Device_10/tx_3/converted_576floats.protobin",
-    "/mnt/lebensraum/Day_1_Equalized/Device_10/tx_4/converted_576floats.protobin",
-    "/mnt/lebensraum/Day_1_Equalized/Device_10/tx_5/converted_576floats.protobin",
-    "/mnt/lebensraum/Day_1_Equalized/Device_10/tx_6/converted_576floats.protobin",
-    "/mnt/lebensraum/Day_1_Equalized/Device_10/tx_7/converted_576floats.protobin",
-    "/mnt/lebensraum/Day_1_Equalized/Device_10/tx_8/converted_576floats.protobin",
-    "/mnt/lebensraum/Day_1_Equalized/Device_10/tx_9/converted_576floats.protobin",
-    "/mnt/lebensraum/Day_1_Equalized/Device_9/tx_1/converted_576floats.protobin",
-    "/mnt/lebensraum/Day_1_Equalized/Device_9/tx_2/converted_576floats.protobin",
-    "/mnt/lebensraum/Day_1_Equalized/Device_9/tx_3/converted_576floats.protobin",
-    "/mnt/lebensraum/Day_1_Equalized/Device_9/tx_4/converted_576floats.protobin",
-    "/mnt/lebensraum/Day_1_Equalized/Device_9/tx_5/converted_576floats.protobin",
-    "/mnt/lebensraum/Day_1_Equalized/Device_9/tx_6/converted_576floats.protobin",
-    "/mnt/lebensraum/Day_1_Equalized/Device_9/tx_7/converted_576floats.protobin",
-    "/mnt/lebensraum/Day_1_Equalized/Device_9/tx_8/converted_576floats.protobin",
-    "/mnt/lebensraum/Day_1_Equalized/Device_9/tx_9/converted_576floats.protobin",
+    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_9/tx_7/converted_576floats.protobin',
+    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_12/tx_3/converted_576floats.protobin',
+    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_12/tx_9/converted_576floats.protobin',
+    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_12/tx_6/converted_576floats.protobin',
+    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_12/tx_7/converted_576floats.protobin',
+    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_10/tx_5/converted_576floats.protobin',
+    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_11/tx_7/converted_576floats.protobin',
+    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_12/tx_10/converted_576floats.protobin',
+    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_9/tx_3/converted_576floats.protobin',
+    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_13/tx_7/converted_576floats.protobin',
+    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_10/tx_4/converted_576floats.protobin',
+    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_11/tx_2/converted_576floats.protobin',
+    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_10/tx_9/converted_576floats.protobin',
+    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_12/tx_2/converted_576floats.protobin',
+    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_10/tx_10/converted_576floats.protobin',
+    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_11/tx_8/converted_576floats.protobin',
+    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_10/tx_6/converted_576floats.protobin',
+    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_9/tx_6/converted_576floats.protobin',
+    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_11/tx_4/converted_576floats.protobin',
+    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_10/tx_8/converted_576floats.protobin',
+    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_12/tx_4/converted_576floats.protobin',
+    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_13/tx_9/converted_576floats.protobin',
+    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_12/tx_8/converted_576floats.protobin',
+    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_10/tx_7/converted_576floats.protobin',
+    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_13/tx_2/converted_576floats.protobin',
+    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_10/tx_3/converted_576floats.protobin',
+    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_9/tx_8/converted_576floats.protobin',
+    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_13/tx_3/converted_576floats.protobin',
+    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_11/tx_6/converted_576floats.protobin',
+    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_11/tx_5/converted_576floats.protobin',
+    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_13/tx_4/converted_576floats.protobin',
+    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_9/tx_1/converted_576floats.protobin',
+    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_10/tx_1/converted_576floats.protobin',
+    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_9/tx_4/converted_576floats.protobin',
+    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_11/tx_1/converted_576floats.protobin'
 ]
 
-
-
-# 52411 examples
 test_paths = [
-    "/mnt/lebensraum/Day_1_Equalized/Device_10/tx_10/converted_576floats.protobin",
-    "/mnt/lebensraum/Day_1_Equalized/Device_9/tx_10/converted_576floats.protobin", 
+    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_11/tx_3/converted_576floats.protobin',
+    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_13/tx_10/converted_576floats.protobin',
+    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_12/tx_1/converted_576floats.protobin',
+    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_13/tx_5/converted_576floats.protobin',
+    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_9/tx_5/converted_576floats.protobin',
+    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_13/tx_6/converted_576floats.protobin',
+    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_13/tx_1/converted_576floats.protobin',
+    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_11/tx_10/converted_576floats.protobin',
+    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_9/tx_10/converted_576floats.protobin',
+    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_10/tx_2/converted_576floats.protobin',
+    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_9/tx_2/converted_576floats.protobin',
+    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_12/tx_5/converted_576floats.protobin',
+    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_13/tx_8/converted_576floats.protobin',
+    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_9/tx_9/converted_576floats.protobin',
+    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_11/tx_9/converted_576floats.protobin'
 ]
+
 
 def plot_confusion_matrix(cm, title='Confusion matrix', cmap=plt.cm.Blues, labels=[]):
     plt.imshow(cm, interpolation='nearest', cmap=cmap)
@@ -129,7 +162,7 @@ def train_model(model, workspace_path, train_paths, test_paths):
 
 
 
-def test_model(model, test_paths):
+def test_model(model, workspace_path, test_paths):
     test_dataset = build_dataset(test_paths)
     test_dataset = test_dataset.map(tf_to_onehot)
     test_dataset = test_dataset.cache(filename=workspace_path+"/"+TEST_CACHE_NAME) # Now this is pretty fuckin cool. Delete the file to re-cache
@@ -276,11 +309,11 @@ def build_model():
 
 
 if __name__ == "__main__":
-    workspace_path = "kek"
+    workspace_path = sys.argv[1]
     model = build_model()
 
-    if sys.argv[1] == "train":
+    if sys.argv[2] == "train":
         train_model(model, workspace_path, train_paths, test_paths)
-    if sys.argv[1] == "test":
-        model.load_weights(workspace_path)
-        test_model(model, test_paths)
+    if sys.argv[2] == "test":
+        model.load_weights(os.path.join(workspace_path, WEIGHTS_NAME))
+        test_model(model, workspace_path, test_paths)
