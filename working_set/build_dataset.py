@@ -196,9 +196,18 @@ def build_auto_encoder_ds(paths):
     return dataset
 
 if __name__ == "__main__":
-    build_auto_encoder_ds([
-        (
-            "/mnt/lebensraum/Day_2_Before_FFT/Device_9/tx_1/converted_576floats.protobin",
-            "/mnt/lebensraum/Day_1_Before_FFT/Devices_1_through_5/Device_9/tx_1/converted_576floats.protobin"
-        ),
-    ])
+    # build_auto_encoder_ds([
+    #     (
+    #         "/mnt/lebensraum/Day_2_Before_FFT/Device_9/tx_1/converted_576floats.protobin",
+    #         "/mnt/lebensraum/Day_1_Before_FFT/Devices_1_through_5/Device_9/tx_1/converted_576floats.protobin"
+    #     ),
+    # ])
+
+
+    ds = build_dataset(['/mnt/lebensraum/Datasets/Day1.Equalized/Device_9/tx_7/converted_576floats.protobin'])
+
+    y = tf.constant([[1,2],[3,4]])
+    print(y.shape)
+
+    for x in ds.take(1):
+        print(x[0].shape)
