@@ -35,44 +35,46 @@ VALIDATION_RATIO=0.5 # Percent of the test set
 WEIGHTS_NAME="classifier.wts.h5"
 TEST_CACHE_NAME="classifier_test_cache"
 TRAIN_CACHE_NAME="classifier_train_cache"
+########################################################################################################
+# Day 1 Equalized
 
-train_paths = [
-    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_9/tx_7/converted_576floats.protobin',
-    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_12/tx_3/converted_576floats.protobin',
-    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_12/tx_9/converted_576floats.protobin',
-    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_12/tx_6/converted_576floats.protobin',
-    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_12/tx_7/converted_576floats.protobin',
-    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_10/tx_5/converted_576floats.protobin',
-    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_11/tx_7/converted_576floats.protobin',
-    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_12/tx_10/converted_576floats.protobin',
-    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_9/tx_3/converted_576floats.protobin',
-    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_13/tx_7/converted_576floats.protobin',
-    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_10/tx_4/converted_576floats.protobin',
-    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_11/tx_2/converted_576floats.protobin',
-    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_10/tx_9/converted_576floats.protobin',
-    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_12/tx_2/converted_576floats.protobin',
-    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_10/tx_10/converted_576floats.protobin',
-    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_11/tx_8/converted_576floats.protobin',
-    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_10/tx_6/converted_576floats.protobin',
-    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_9/tx_6/converted_576floats.protobin',
-    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_11/tx_4/converted_576floats.protobin',
-    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_10/tx_8/converted_576floats.protobin',
-    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_12/tx_4/converted_576floats.protobin',
-    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_13/tx_9/converted_576floats.protobin',
-    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_12/tx_8/converted_576floats.protobin',
-    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_10/tx_7/converted_576floats.protobin',
-    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_13/tx_2/converted_576floats.protobin',
-    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_10/tx_3/converted_576floats.protobin',
-    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_9/tx_8/converted_576floats.protobin',
-    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_13/tx_3/converted_576floats.protobin',
-    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_11/tx_6/converted_576floats.protobin',
-    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_11/tx_5/converted_576floats.protobin',
-    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_13/tx_4/converted_576floats.protobin',
-    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_9/tx_1/converted_576floats.protobin',
-    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_10/tx_1/converted_576floats.protobin',
-    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_9/tx_4/converted_576floats.protobin',
-    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_11/tx_1/converted_576floats.protobin'
-]
+# train_paths = [
+#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_9/tx_7/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_12/tx_3/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_12/tx_9/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_12/tx_6/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_12/tx_7/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_10/tx_5/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_11/tx_7/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_12/tx_10/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_9/tx_3/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_13/tx_7/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_10/tx_4/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_11/tx_2/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_10/tx_9/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_12/tx_2/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_10/tx_10/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_11/tx_8/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_10/tx_6/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_9/tx_6/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_11/tx_4/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_10/tx_8/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_12/tx_4/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_13/tx_9/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_12/tx_8/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_10/tx_7/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_13/tx_2/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_10/tx_3/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_9/tx_8/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_13/tx_3/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_11/tx_6/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_11/tx_5/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_13/tx_4/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_9/tx_1/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_10/tx_1/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_9/tx_4/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_11/tx_1/converted_576floats.protobin'
+# ]
 
 test_paths = [
     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_11/tx_3/converted_576floats.protobin',
@@ -91,6 +93,87 @@ test_paths = [
     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_9/tx_9/converted_576floats.protobin',
     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_11/tx_9/converted_576floats.protobin'
 ]
+
+########################################################################################################
+# Day 2 After FFT
+
+# train_paths = [
+#     '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_9/tx_7/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_13/tx_7/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_13/tx_4/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_9/tx_9/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_11/tx_3/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_13/tx_9/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_13/tx_8/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_12/tx_5/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_13/tx_1/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_9/tx_5/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_13/tx_6/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_12/tx_9/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_11/tx_8/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_11/tx_6/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_12/tx_3/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_12/tx_10/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_11/tx_4/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_12/tx_6/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_12/tx_4/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_11/tx_5/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_9/tx_3/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_9/tx_8/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_10/tx_10/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_10/tx_5/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_10/tx_8/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_11/tx_1/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_9/tx_6/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_10/tx_4/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_11/tx_7/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_13/tx_2/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_12/tx_1/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_9/tx_2/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_11/tx_10/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_10/tx_3/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_10/tx_7/converted_576floats.protobin'
+# ]
+
+# test_paths = [
+#     '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_10/tx_6/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_12/tx_7/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_10/tx_9/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_9/tx_10/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_10/tx_2/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_12/tx_2/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_13/tx_10/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_13/tx_5/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_11/tx_2/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_11/tx_9/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_12/tx_8/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_13/tx_3/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_10/tx_1/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_9/tx_4/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_9/tx_1/converted_576floats.protobin'
+# ]
+
+########################################################################################################
+# Day 2 Equalized (For testing)
+# Accuracy = 0.6524751476468215 when used with Day 1 weights... WTF
+
+# test_paths = [
+#     '/mnt/lebensraum/Datasets/Day2.Equalized/Device_11/tx_3/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day2.Equalized/Device_13/tx_10/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day2.Equalized/Device_12/tx_1/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day2.Equalized/Device_13/tx_5/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day2.Equalized/Device_9/tx_5/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day2.Equalized/Device_13/tx_6/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day2.Equalized/Device_13/tx_1/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day2.Equalized/Device_11/tx_10/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day2.Equalized/Device_9/tx_10/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day2.Equalized/Device_10/tx_2/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day2.Equalized/Device_9/tx_2/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day2.Equalized/Device_12/tx_5/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day2.Equalized/Device_13/tx_8/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day2.Equalized/Device_9/tx_9/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day2.Equalized/Device_11/tx_9/converted_576floats.protobin'
+# ]
 
 
 def plot_confusion_matrix(cm, title='Confusion matrix', cmap=plt.cm.Blues, labels=[]):
@@ -309,11 +392,14 @@ def build_model():
 
 
 if __name__ == "__main__":
-    workspace_path = sys.argv[1]
     model = build_model()
+    workspace_path = sys.argv[1]
 
     if sys.argv[2] == "train":
+        
         train_model(model, workspace_path, train_paths, test_paths)
     if sys.argv[2] == "test":
-        model.load_weights(os.path.join(workspace_path, WEIGHTS_NAME))
+        # <workspace path> <test> <weights path>
+        weights_path = sys.argv[3]
+        model.load_weights(weights_path)
         test_model(model, workspace_path, test_paths)
