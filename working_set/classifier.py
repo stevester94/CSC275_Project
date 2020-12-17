@@ -41,6 +41,7 @@ TRAIN_CACHE_NAME="classifier_train_cache"
 VAL_CACHE_NAME="classifier_val_cache"
 ########################################################################################################
 # Day 1 Equalized
+# Accuracy = 0.905040823571175
 # DATASET_SIZE=1126808
 # train_paths = [
 #     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_9/tx_7/converted_576floats.protobin',
@@ -159,7 +160,7 @@ VAL_CACHE_NAME="classifier_val_cache"
 
 ########################################################################################################
 # Day 2 Equalized (For testing)
-# Accuracy = 0.6524751476468215 when used with Day 1 weights... WTF (THIS IS OLD)
+# Accuracy = 0.732852465997711 when used with Day 1 weights (vs )
 DATASET_SIZE=751428
 train_paths = []
 test_paths = [

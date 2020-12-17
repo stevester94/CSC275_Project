@@ -173,7 +173,7 @@ def build_debug_set(min_dev_id, max_dev_id, dataset_size, window_size):
 def build_auto_encoder_ds(paths):
     def tf_combine_iq(example_1,example_2):
         return tf.py_function(
-            lambda x,y: (tf.reshape(x, (2,WINDOW_SIZE)), tf.reshape(y, (2,WINDOW_SIZE))),
+            lambda x,y: (x,y),
             (example_1[0],example_2[0]),
             [tf.float32, tf.float32]
         )
@@ -196,18 +196,22 @@ def build_auto_encoder_ds(paths):
     return dataset
 
 if __name__ == "__main__":
-    # build_auto_encoder_ds([
-    #     (
-    #         "/mnt/lebensraum/Day_2_Before_FFT/Device_9/tx_1/converted_576floats.protobin",
-    #         "/mnt/lebensraum/Day_1_Before_FFT/Devices_1_through_5/Device_9/tx_1/converted_576floats.protobin"
-    #     ),
-    # ])
+    ds = build_auto_encoder_ds([
+        (
+            "/mnt/lebensraum/Datasets/Day1.Equalized/Device_9/tx_1/converted_576floats.protobin",
+            "/mnt/lebensraum/Datasets/Day2.After_FFT/Device_9/tx_1/converted_576floats.protobin",
+        ),
+    ])
+
+    for x,y in ds.take(1):
+        print(x.shape)
+        print(y.shape)
 
 
-    ds = build_dataset(['/mnt/lebensraum/Datasets/Day1.Equalized/Device_9/tx_7/converted_576floats.protobin'])
+    # ds = build_dataset(['/mnt/lebensraum/Datasets/Day1.Equalized/Device_9/tx_7/converted_576floats.protobin'])
 
-    y = tf.constant([[1,2],[3,4]])
-    print(y.shape)
+    # y = tf.constant([[1,2],[3,4]])
+    # print(y.shape)
 
-    for x in ds.take(1):
-        print(x[0].shape)
+    # for x in ds.take(1):
+    #     print(x[0].shape)
