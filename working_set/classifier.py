@@ -26,73 +26,77 @@ if nb_epoch < 100:
     print("RUNNING WITH SUPER LOW EPOCHS!")
     print("AGGGGGGGGGGGGGGGGGGGGHHHHHHHHHHHHHHHHHHHHHHHHHHHH")
 
-batch_size=300
+batch_size=250
 
 window_size=288
 prefetch_size=1000
-VALIDATION_RATIO=0.5 # Percent of the test set
+
+TRAIN_RATIO=0.7
+VALIDATION_RATIO=0.2
+TEST_RATIO=0.1
 
 WEIGHTS_NAME="classifier.wts.h5"
 TEST_CACHE_NAME="classifier_test_cache"
 TRAIN_CACHE_NAME="classifier_train_cache"
+VAL_CACHE_NAME="classifier_val_cache"
 ########################################################################################################
 # Day 1 Equalized
+# DATASET_SIZE=1126808
+# train_paths = [
+#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_9/tx_7/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_12/tx_3/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_12/tx_9/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_12/tx_6/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_12/tx_7/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_10/tx_5/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_11/tx_7/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_12/tx_10/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_9/tx_3/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_13/tx_7/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_10/tx_4/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_11/tx_2/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_10/tx_9/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_12/tx_2/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_10/tx_10/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_11/tx_8/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_10/tx_6/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_9/tx_6/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_11/tx_4/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_10/tx_8/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_12/tx_4/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_13/tx_9/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_12/tx_8/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_10/tx_7/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_13/tx_2/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_10/tx_3/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_9/tx_8/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_13/tx_3/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_11/tx_6/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_11/tx_5/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_13/tx_4/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_9/tx_1/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_10/tx_1/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_9/tx_4/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_11/tx_1/converted_576floats.protobin'
+# ]
 
-train_paths = [
-    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_9/tx_7/converted_576floats.protobin',
-    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_12/tx_3/converted_576floats.protobin',
-    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_12/tx_9/converted_576floats.protobin',
-    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_12/tx_6/converted_576floats.protobin',
-    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_12/tx_7/converted_576floats.protobin',
-    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_10/tx_5/converted_576floats.protobin',
-    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_11/tx_7/converted_576floats.protobin',
-    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_12/tx_10/converted_576floats.protobin',
-    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_9/tx_3/converted_576floats.protobin',
-    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_13/tx_7/converted_576floats.protobin',
-    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_10/tx_4/converted_576floats.protobin',
-    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_11/tx_2/converted_576floats.protobin',
-    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_10/tx_9/converted_576floats.protobin',
-    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_12/tx_2/converted_576floats.protobin',
-    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_10/tx_10/converted_576floats.protobin',
-    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_11/tx_8/converted_576floats.protobin',
-    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_10/tx_6/converted_576floats.protobin',
-    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_9/tx_6/converted_576floats.protobin',
-    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_11/tx_4/converted_576floats.protobin',
-    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_10/tx_8/converted_576floats.protobin',
-    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_12/tx_4/converted_576floats.protobin',
-    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_13/tx_9/converted_576floats.protobin',
-    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_12/tx_8/converted_576floats.protobin',
-    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_10/tx_7/converted_576floats.protobin',
-    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_13/tx_2/converted_576floats.protobin',
-    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_10/tx_3/converted_576floats.protobin',
-    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_9/tx_8/converted_576floats.protobin',
-    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_13/tx_3/converted_576floats.protobin',
-    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_11/tx_6/converted_576floats.protobin',
-    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_11/tx_5/converted_576floats.protobin',
-    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_13/tx_4/converted_576floats.protobin',
-    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_9/tx_1/converted_576floats.protobin',
-    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_10/tx_1/converted_576floats.protobin',
-    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_9/tx_4/converted_576floats.protobin',
-    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_11/tx_1/converted_576floats.protobin'
-]
-
-test_paths = [
-    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_11/tx_3/converted_576floats.protobin',
-    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_13/tx_10/converted_576floats.protobin',
-    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_12/tx_1/converted_576floats.protobin',
-    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_13/tx_5/converted_576floats.protobin',
-    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_9/tx_5/converted_576floats.protobin',
-    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_13/tx_6/converted_576floats.protobin',
-    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_13/tx_1/converted_576floats.protobin',
-    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_11/tx_10/converted_576floats.protobin',
-    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_9/tx_10/converted_576floats.protobin',
-    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_10/tx_2/converted_576floats.protobin',
-    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_9/tx_2/converted_576floats.protobin',
-    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_12/tx_5/converted_576floats.protobin',
-    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_13/tx_8/converted_576floats.protobin',
-    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_9/tx_9/converted_576floats.protobin',
-    '/mnt/lebensraum/Datasets/Day1.Equalized/Device_11/tx_9/converted_576floats.protobin'
-]
+# test_paths = [
+#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_11/tx_3/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_13/tx_10/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_12/tx_1/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_13/tx_5/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_9/tx_5/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_13/tx_6/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_13/tx_1/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_11/tx_10/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_9/tx_10/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_10/tx_2/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_9/tx_2/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_12/tx_5/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_13/tx_8/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_9/tx_9/converted_576floats.protobin',
+#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_11/tx_9/converted_576floats.protobin'
+# ]
 
 ########################################################################################################
 # Day 2 After FFT
@@ -155,25 +159,62 @@ test_paths = [
 
 ########################################################################################################
 # Day 2 Equalized (For testing)
-# Accuracy = 0.6524751476468215 when used with Day 1 weights... WTF
+# Accuracy = 0.6524751476468215 when used with Day 1 weights... WTF (THIS IS OLD)
+DATASET_SIZE=751428
+train_paths = []
+test_paths = [
+    "/mnt/lebensraum/Datasets/Day2.Equalized/Device_11/tx_6/converted_576floats.protobin",
+    "/mnt/lebensraum/Datasets/Day2.Equalized/Device_11/tx_3/converted_576floats.protobin",
+    "/mnt/lebensraum/Datasets/Day2.Equalized/Device_11/tx_1/converted_576floats.protobin",
+    "/mnt/lebensraum/Datasets/Day2.Equalized/Device_11/tx_10/converted_576floats.protobin",
+    "/mnt/lebensraum/Datasets/Day2.Equalized/Device_11/tx_7/converted_576floats.protobin",
+    "/mnt/lebensraum/Datasets/Day2.Equalized/Device_11/tx_4/converted_576floats.protobin",
+    "/mnt/lebensraum/Datasets/Day2.Equalized/Device_11/tx_2/converted_576floats.protobin",
+    "/mnt/lebensraum/Datasets/Day2.Equalized/Device_11/tx_5/converted_576floats.protobin",
+    "/mnt/lebensraum/Datasets/Day2.Equalized/Device_11/tx_8/converted_576floats.protobin",
+    "/mnt/lebensraum/Datasets/Day2.Equalized/Device_11/tx_9/converted_576floats.protobin",
+    "/mnt/lebensraum/Datasets/Day2.Equalized/Device_12/tx_6/converted_576floats.protobin",
+    "/mnt/lebensraum/Datasets/Day2.Equalized/Device_12/tx_3/converted_576floats.protobin",
+    "/mnt/lebensraum/Datasets/Day2.Equalized/Device_12/tx_1/converted_576floats.protobin",
+    "/mnt/lebensraum/Datasets/Day2.Equalized/Device_12/tx_10/converted_576floats.protobin",
+    "/mnt/lebensraum/Datasets/Day2.Equalized/Device_12/tx_7/converted_576floats.protobin",
+    "/mnt/lebensraum/Datasets/Day2.Equalized/Device_12/tx_4/converted_576floats.protobin",
+    "/mnt/lebensraum/Datasets/Day2.Equalized/Device_12/tx_2/converted_576floats.protobin",
+    "/mnt/lebensraum/Datasets/Day2.Equalized/Device_12/tx_5/converted_576floats.protobin",
+    "/mnt/lebensraum/Datasets/Day2.Equalized/Device_12/tx_8/converted_576floats.protobin",
+    "/mnt/lebensraum/Datasets/Day2.Equalized/Device_12/tx_9/converted_576floats.protobin",
+    "/mnt/lebensraum/Datasets/Day2.Equalized/Device_10/tx_6/converted_576floats.protobin",
+    "/mnt/lebensraum/Datasets/Day2.Equalized/Device_10/tx_3/converted_576floats.protobin",
+    "/mnt/lebensraum/Datasets/Day2.Equalized/Device_10/tx_1/converted_576floats.protobin",
+    "/mnt/lebensraum/Datasets/Day2.Equalized/Device_10/tx_10/converted_576floats.protobin",
+    "/mnt/lebensraum/Datasets/Day2.Equalized/Device_10/tx_7/converted_576floats.protobin",
+    "/mnt/lebensraum/Datasets/Day2.Equalized/Device_10/tx_4/converted_576floats.protobin",
+    "/mnt/lebensraum/Datasets/Day2.Equalized/Device_10/tx_2/converted_576floats.protobin",
+    "/mnt/lebensraum/Datasets/Day2.Equalized/Device_10/tx_5/converted_576floats.protobin",
+    "/mnt/lebensraum/Datasets/Day2.Equalized/Device_10/tx_8/converted_576floats.protobin",
+    "/mnt/lebensraum/Datasets/Day2.Equalized/Device_10/tx_9/converted_576floats.protobin",
+    "/mnt/lebensraum/Datasets/Day2.Equalized/Device_13/tx_6/converted_576floats.protobin",
+    "/mnt/lebensraum/Datasets/Day2.Equalized/Device_13/tx_3/converted_576floats.protobin",
+    "/mnt/lebensraum/Datasets/Day2.Equalized/Device_13/tx_1/converted_576floats.protobin",
+    "/mnt/lebensraum/Datasets/Day2.Equalized/Device_13/tx_10/converted_576floats.protobin",
+    "/mnt/lebensraum/Datasets/Day2.Equalized/Device_13/tx_7/converted_576floats.protobin",
+    "/mnt/lebensraum/Datasets/Day2.Equalized/Device_13/tx_4/converted_576floats.protobin",
+    "/mnt/lebensraum/Datasets/Day2.Equalized/Device_13/tx_2/converted_576floats.protobin",
+    "/mnt/lebensraum/Datasets/Day2.Equalized/Device_13/tx_5/converted_576floats.protobin",
+    "/mnt/lebensraum/Datasets/Day2.Equalized/Device_13/tx_8/converted_576floats.protobin",
+    "/mnt/lebensraum/Datasets/Day2.Equalized/Device_13/tx_9/converted_576floats.protobin",
+    "/mnt/lebensraum/Datasets/Day2.Equalized/Device_9/tx_6/converted_576floats.protobin",
+    "/mnt/lebensraum/Datasets/Day2.Equalized/Device_9/tx_3/converted_576floats.protobin",
+    "/mnt/lebensraum/Datasets/Day2.Equalized/Device_9/tx_1/converted_576floats.protobin",
+    "/mnt/lebensraum/Datasets/Day2.Equalized/Device_9/tx_10/converted_576floats.protobin",
+    "/mnt/lebensraum/Datasets/Day2.Equalized/Device_9/tx_7/converted_576floats.protobin",
+    "/mnt/lebensraum/Datasets/Day2.Equalized/Device_9/tx_4/converted_576floats.protobin",
+    "/mnt/lebensraum/Datasets/Day2.Equalized/Device_9/tx_2/converted_576floats.protobin",
+    "/mnt/lebensraum/Datasets/Day2.Equalized/Device_9/tx_5/converted_576floats.protobin",
+    "/mnt/lebensraum/Datasets/Day2.Equalized/Device_9/tx_8/converted_576floats.protobin",
+    "/mnt/lebensraum/Datasets/Day2.Equalized/Device_9/tx_9/converted_576floats.protobin",
+]
 
-# test_paths = [
-#     '/mnt/lebensraum/Datasets/Day2.Equalized/Device_11/tx_3/converted_576floats.protobin',
-#     '/mnt/lebensraum/Datasets/Day2.Equalized/Device_13/tx_10/converted_576floats.protobin',
-#     '/mnt/lebensraum/Datasets/Day2.Equalized/Device_12/tx_1/converted_576floats.protobin',
-#     '/mnt/lebensraum/Datasets/Day2.Equalized/Device_13/tx_5/converted_576floats.protobin',
-#     '/mnt/lebensraum/Datasets/Day2.Equalized/Device_9/tx_5/converted_576floats.protobin',
-#     '/mnt/lebensraum/Datasets/Day2.Equalized/Device_13/tx_6/converted_576floats.protobin',
-#     '/mnt/lebensraum/Datasets/Day2.Equalized/Device_13/tx_1/converted_576floats.protobin',
-#     '/mnt/lebensraum/Datasets/Day2.Equalized/Device_11/tx_10/converted_576floats.protobin',
-#     '/mnt/lebensraum/Datasets/Day2.Equalized/Device_9/tx_10/converted_576floats.protobin',
-#     '/mnt/lebensraum/Datasets/Day2.Equalized/Device_10/tx_2/converted_576floats.protobin',
-#     '/mnt/lebensraum/Datasets/Day2.Equalized/Device_9/tx_2/converted_576floats.protobin',
-#     '/mnt/lebensraum/Datasets/Day2.Equalized/Device_12/tx_5/converted_576floats.protobin',
-#     '/mnt/lebensraum/Datasets/Day2.Equalized/Device_13/tx_8/converted_576floats.protobin',
-#     '/mnt/lebensraum/Datasets/Day2.Equalized/Device_9/tx_9/converted_576floats.protobin',
-#     '/mnt/lebensraum/Datasets/Day2.Equalized/Device_11/tx_9/converted_576floats.protobin'
-# ]
 
 
 def plot_confusion_matrix(cm, title='Confusion matrix', cmap=plt.cm.Blues, labels=[]):
@@ -208,24 +249,30 @@ def tf_filter_fn(x, device_id, transmission_id, slice_index):
     return tf.math.count_nonzero(broadcast_equal) > 0
 
 def train_model(model, workspace_path, train_paths, test_paths):
-    train_dataset = build_dataset(train_paths)
-    test_dataset = build_dataset(test_paths)
-
-    #train_dataset = train_dataset.filter(tf_filter_fn) # We only want device 9 or 10
-    train_dataset = train_dataset.map(tf_to_onehot)
-    train_dataset = train_dataset.cache(filename=workspace_path+"/"+TRAIN_CACHE_NAME) # Now this is pretty fuckin cool. Delete the file to re-cache
+    dataset = build_dataset(train_paths+test_paths)
+    dataset = dataset.map(tf_to_onehot)
+    # DATASET_SIZE = get_num_elements_in_dataset(dataset)
+    
+    print("Dataset size is: ", DATASET_SIZE)
+    dataset = dataset.cache(filename=workspace_path+"/"+"shuffled_dataset")
+    dataset = dataset.shuffle(DATASET_SIZE, seed=1337, reshuffle_each_iteration=False)
     
 
-    test_dataset = test_dataset.map(tf_to_onehot)
-    test_dataset = test_dataset.cache(filename=workspace_path+"/"+TEST_CACHE_NAME) # Now this is pretty fuckin cool. Delete the file to re-cache
-    TEST_DATASET_SIZE = get_num_elements_in_dataset(test_dataset)
+    train_dataset_size = int(DATASET_SIZE * TRAIN_RATIO)
+    val_dataset_size   = int(DATASET_SIZE * VALIDATION_RATIO)
+    test_dataset_size  = int(DATASET_SIZE * TEST_RATIO)
 
+    train_dataset = dataset.take(train_dataset_size)
+    train_dataset = train_dataset.cache(filename=workspace_path+"/"+TRAIN_CACHE_NAME) # Now this is pretty fuckin cool. Delete the file to re-cache
     train_dataset = train_dataset.prefetch(prefetch_size)
-    test_dataset = test_dataset.prefetch(prefetch_size)
 
-    # validation set comes from the test set
-    val_size = int(VALIDATION_RATIO * TEST_DATASET_SIZE)
-    val_dataset = test_dataset.take(val_size)
+    val_dataset = dataset.skip(train_dataset_size).take(val_dataset_size)
+    val_dataset = val_dataset.cache(filename=workspace_path+"/"+VAL_CACHE_NAME) # Now this is pretty fuckin cool. Delete the file to re-cache
+    val_dataset = val_dataset.prefetch(prefetch_size)
+
+    test_dataset = dataset.skip(train_dataset_size+val_dataset_size).take(test_dataset_size)
+    test_dataset = test_dataset.cache(filename=workspace_path+"/"+TEST_CACHE_NAME) # Now this is pretty fuckin cool. Delete the file to re-cache
+    test_dataset = test_dataset.prefetch(prefetch_size)
 
     # Build our batches
     train_dataset = train_dataset.batch(batch_size)
@@ -246,8 +293,18 @@ def train_model(model, workspace_path, train_paths, test_paths):
 
 
 def test_model(model, workspace_path, test_paths):
-    test_dataset = build_dataset(test_paths)
-    test_dataset = test_dataset.map(tf_to_onehot)
+    dataset = build_dataset(train_paths+test_paths)
+    dataset = dataset.map(tf_to_onehot)
+    # DATASET_SIZE = get_num_elements_in_dataset(dataset)
+    print("Dataset size is: ", DATASET_SIZE)
+    dataset = dataset.cache(filename=workspace_path+"/"+"shuffled_dataset")
+    dataset = dataset.shuffle(DATASET_SIZE, seed=1337, reshuffle_each_iteration=False)
+
+    train_dataset_size = int(DATASET_SIZE * TRAIN_RATIO)
+    val_dataset_size   = int(DATASET_SIZE * VALIDATION_RATIO)
+    test_dataset_size  = int(DATASET_SIZE * TEST_RATIO)
+
+    test_dataset = dataset.skip(train_dataset_size+val_dataset_size).take(test_dataset_size)
     test_dataset = test_dataset.cache(filename=workspace_path+"/"+TEST_CACHE_NAME) # Now this is pretty fuckin cool. Delete the file to re-cache
     test_dataset = test_dataset.prefetch(prefetch_size)
     test_dataset  = test_dataset.batch(batch_size)
