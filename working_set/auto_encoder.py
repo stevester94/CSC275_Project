@@ -31,6 +31,9 @@ TEST_CACHE_NAME="encoder_test_cache"
 TRAIN_CACHE_NAME="encoder_train_cache"
 VAL_CACHE_NAME="encoder_val_cache"
 
+#######################################################################################################
+# This is the goal dataset
+# workspace: encoder.shuffled
 DATASET_SIZE=191907
 train_paths = [   
     (   '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_9/tx_10/converted_576floats.protobin',
@@ -55,10 +58,38 @@ train_paths = [
         '/mnt/lebensraum/Datasets/Day1.Equalized/Device_9/tx_9/converted_576floats.protobin'),
 ]
 test_paths = []
+#######################################################################################################
+# This is the dummy auto encoder set
+# going to just bump up the neural net so we can so a strict passthrough, verifying the architecture
+# After 14 epochs get 0 loss
+# DATASET_SIZE=191907
+# train_paths = [   
+#     (   '/mnt/lebensraum/Datasets/Day1.Equalized/Device_9/tx_10/converted_576floats.protobin',
+#         '/mnt/lebensraum/Datasets/Day1.Equalized/Device_9/tx_10/converted_576floats.protobin'),
+#     (   '/mnt/lebensraum/Datasets/Day1.Equalized/Device_9/tx_3/converted_576floats.protobin',
+#         '/mnt/lebensraum/Datasets/Day1.Equalized/Device_9/tx_3/converted_576floats.protobin'),
+#     (   '/mnt/lebensraum/Datasets/Day1.Equalized/Device_9/tx_8/converted_576floats.protobin',
+#         '/mnt/lebensraum/Datasets/Day1.Equalized/Device_9/tx_8/converted_576floats.protobin'),
+#     (   '/mnt/lebensraum/Datasets/Day1.Equalized/Device_9/tx_6/converted_576floats.protobin',
+#         '/mnt/lebensraum/Datasets/Day1.Equalized/Device_9/tx_6/converted_576floats.protobin'),
+#     (   '/mnt/lebensraum/Datasets/Day1.Equalized/Device_9/tx_4/converted_576floats.protobin',
+#         '/mnt/lebensraum/Datasets/Day1.Equalized/Device_9/tx_4/converted_576floats.protobin'),
+#     (   '/mnt/lebensraum/Datasets/Day1.Equalized/Device_9/tx_7/converted_576floats.protobin',
+#         '/mnt/lebensraum/Datasets/Day1.Equalized/Device_9/tx_7/converted_576floats.protobin'),
+#     (   '/mnt/lebensraum/Datasets/Day1.Equalized/Device_9/tx_2/converted_576floats.protobin',
+#         '/mnt/lebensraum/Datasets/Day1.Equalized/Device_9/tx_2/converted_576floats.protobin'),
+#     (   '/mnt/lebensraum/Datasets/Day1.Equalized/Device_9/tx_5/converted_576floats.protobin',
+#         '/mnt/lebensraum/Datasets/Day1.Equalized/Device_9/tx_5/converted_576floats.protobin'),
+#     (   '/mnt/lebensraum/Datasets/Day1.Equalized/Device_9/tx_1/converted_576floats.protobin',
+#         '/mnt/lebensraum/Datasets/Day1.Equalized/Device_9/tx_1/converted_576floats.protobin'),
+#     (   '/mnt/lebensraum/Datasets/Day1.Equalized/Device_9/tx_9/converted_576floats.protobin',
+#         '/mnt/lebensraum/Datasets/Day1.Equalized/Device_9/tx_9/converted_576floats.protobin'),
+# ]
+# test_paths = []
 
 
 def train_model(model, workspace_path, train_paths, test_paths):
-    dataset = build_auto_encoder_ds(train_paths+test_paths)    
+    dataset = build_auto_encoder_ds(train_paths+test_paths)
     dataset = dataset.cache(filename=workspace_path+"/"+"shuffled_dataset")
     
     # DATASET_SIZE = get_num_elements_in_dataset(dataset)
@@ -66,6 +97,7 @@ def train_model(model, workspace_path, train_paths, test_paths):
     
     dataset = dataset.shuffle(DATASET_SIZE, seed=1337, reshuffle_each_iteration=False)
     
+
 
     train_dataset_size = int(DATASET_SIZE * TRAIN_RATIO)
     val_dataset_size   = int(DATASET_SIZE * VALIDATION_RATIO)
@@ -87,6 +119,7 @@ def train_model(model, workspace_path, train_paths, test_paths):
     train_dataset = train_dataset.batch(batch_size)
     val_dataset   = val_dataset.batch(batch_size)
 
+
     history = model.fit(
         train_dataset,
         #BATCH_SIZE=BATCH_SIZE,
@@ -95,7 +128,7 @@ def train_model(model, workspace_path, train_paths, test_paths):
         validation_data=val_dataset,
         callbacks = [
             keras.callbacks.ModelCheckpoint(workspace_path+"/"+WEIGHTS_NAME, monitor='val_loss', verbose=0, save_best_only=True, mode='auto'),
-            keras.callbacks.EarlyStopping(monitor='val_loss', patience=5, verbose=0, mode='auto')
+            keras.callbacks.EarlyStopping(monitor='val_loss', patience=10, verbose=0, mode='auto')
         ]
     )
 
@@ -109,43 +142,28 @@ def build_model():
         Reshape(in_shp, input_shape=in_shp)
     )
 
+    NUM_DENSE_NODES=1000 # Originally 128
     # SM: So the number of units is the output number, input can be anything (as long as one dimensional)
-    model.add(
-        # Originally:     Dense(256,activation='relu',init='he_normal',name="dense1")
-        Dense(
-            units=128, # OG 256
-            activation='relu',
-            kernel_initializer='he_normal', # I ASSUME kernel is what was initialized using he_normal
-            name="auto_encoder_1"
-        )
-    )
+    model.add(Dense(units=NUM_DENSE_NODES,activation='relu',kernel_initializer='he_normal',name="auto_encoder_1"))
     model.add(Dropout(dr))
-    model.add(
-        # Originally:     Dense(256,activation='relu',init='he_normal',name="dense1")
-        Dense(
-            units=128, # OG 256
-            activation='relu',
-            kernel_initializer='he_normal', # I ASSUME kernel is what was initialized using he_normal
-            name="auto_encoder_2"
-        )
-    )
+    model.add(Dense(units=NUM_DENSE_NODES,activation='relu',kernel_initializer='he_normal',name="auto_encoder_2"))
     model.add(Dropout(dr))
-    model.add(
-        # Originally:     Dense(256,activation='relu',init='he_normal',name="dense1")
-        Dense(
-            units=128, # OG 256
-            activation='relu',
-            kernel_initializer='he_normal', # I ASSUME kernel is what was initialized using he_normal
-            name="auto_encoder_3"
-        )
-    )
+    model.add(Dense(units=NUM_DENSE_NODES,activation='relu',kernel_initializer='he_normal',name="auto_encoder_3"))
     model.add(Dropout(dr))
+    model.add(Dense(units=NUM_DENSE_NODES,activation='relu',kernel_initializer='he_normal',name="auto_encoder_4"))
+    model.add(Dropout(dr))
+    model.add(Dense(units=NUM_DENSE_NODES,activation='relu',kernel_initializer='he_normal',name="auto_encoder_5"))
+    model.add(Dropout(dr))
+    model.add(Dense(units=NUM_DENSE_NODES,activation='relu',kernel_initializer='he_normal',name="auto_encoder_6"))
+    model.add(Dropout(dr))
+
+
     model.add(
         # SM: Weird this did not come with an activation
         Dense(
             units=2*WINDOW_SIZE,
             kernel_initializer='he_normal',
-            name="auto_encoder_4"
+            name="auto_encoder_out"
         )
     )
     model.compile(loss='categorical_crossentropy', optimizer='adam')
@@ -163,6 +181,8 @@ def test_model(model, workspace_path, test_paths):
 
 
 if __name__ == "__main__":
+    dataset = build_auto_encoder_ds(train_paths+test_paths)
+
     model = build_model()
     workspace_path = sys.argv[1]
 

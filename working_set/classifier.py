@@ -296,9 +296,9 @@ def train_model(model, workspace_path, train_paths, test_paths):
 def test_model(model, workspace_path, test_paths):
     dataset = build_dataset(train_paths+test_paths)
     dataset = dataset.map(tf_to_onehot)
-    # DATASET_SIZE = get_num_elements_in_dataset(dataset)
-    print("Dataset size is: ", DATASET_SIZE)
     dataset = dataset.cache(filename=workspace_path+"/"+"shuffled_dataset")
+    DATASET_SIZE = get_num_elements_in_dataset(dataset) # There's an unfortunate implication that we must always compute this
+    print("Dataset size is: ", DATASET_SIZE)
     dataset = dataset.shuffle(DATASET_SIZE, seed=1337, reshuffle_each_iteration=False)
 
     train_dataset_size = int(DATASET_SIZE * TRAIN_RATIO)
