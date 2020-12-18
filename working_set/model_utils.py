@@ -1,5 +1,5 @@
 #! /usr/bin/python3
-import sys, os
+import sys, os, time
 
 import numpy as np
 import tensorflow as tf
@@ -25,27 +25,36 @@ def configure_and_split_dataset(dataset, ds_size, ds_cache_path):
     PREFETCH_SIZE=1000
     BATCH_SIZE=250
 
-    # Caching needs to be in this order for shuffling
+    if ds_size > 1126808:
+        for i in range(10):
+            print("WARNNNNNNNNNNNNNNNNNIIIIIIIIIIINNNNNNNNNNNGGGGGGGGGGGGGG")
+            time.sleep(10/1000)
 
+        print("Dataset is too big, so we're gonna do imperfect shuffling")
+        shuffle_buffer_size = 1126808
+    else:
+        shuffle_buffer_size = ds_size
+
+    # Caching needs to be in this order for shuffling
     dataset = dataset.cache(filename=ds_cache_path)
-    dataset = dataset.shuffle(ds_size, seed=1337, reshuffle_each_iteration=False)
+    dataset = dataset.shuffle(shuffle_buffer_size, seed=1337, reshuffle_each_iteration=False)
     
     train_dataset_size = int(ds_size * TRAIN_RATIO)
     val_dataset_size   = int(ds_size * VALIDATION_RATIO)
     test_dataset_size  = int(ds_size * TEST_RATIO)
 
     train_dataset = dataset.take(train_dataset_size)
-    # train_dataset = train_dataset.cache(filename=workspace_path+"/"+TRAIN_CACHE_NAME)
+    train_dataset = train_dataset.cache(filename=ds_cache_path+".train")
     train_dataset = train_dataset.prefetch(PREFETCH_SIZE)
     train_dataset = train_dataset.batch(BATCH_SIZE)
 
     val_dataset = dataset.skip(train_dataset_size).take(val_dataset_size)
-    # val_dataset = val_dataset.cache(filename=workspace_path+"/"+VAL_CACHE_NAME)
+    val_dataset = val_dataset.cache(filename=ds_cache_path+".val")
     val_dataset = val_dataset.prefetch(PREFETCH_SIZE)
     val_dataset = val_dataset.batch(BATCH_SIZE)
 
     test_dataset = dataset.skip(train_dataset_size+val_dataset_size).take(test_dataset_size)
-    # test_dataset = test_dataset.cache(filename=workspace_path+"/"+TEST_CACHE_NAME)
+    test_dataset = test_dataset.cache(filename=ds_cache_path+".test")
     test_dataset = test_dataset.prefetch(PREFETCH_SIZE)
     test_dataset = test_dataset.batch(BATCH_SIZE)
 
@@ -63,12 +72,23 @@ def plot_confusion_matrix(cm, title='Confusion matrix', cmap=plt.cm.Blues, label
     plt.xlabel('Predicted label')
 
 
+def plot_loss_curve(history, path):
+    plt.figure()
+    plt.title('Training performance')
+    plt.plot(history.epoch, history.history['loss'], label='train loss+error')
+    plt.plot(history.epoch, history.history['val_loss'], label='val_error')
+    plt.legend()
+
+    plt.savefig(path)
+
+
+
 # build_dataset_func takes a list of paths or tuples
 # This is clearly a shit abstraction lmao
 def ds_config_to_datasets(ds_config, build_dataset_func):
     CACHE_PATH = "_cache"
 
-    dataset = build_dataset_func(ds_config["train_paths"] + ds_config["test_paths"])
+    dataset = build_dataset_func(ds_config["paths"])
 
     if "size" not in ds_config.keys()  or ds_config["size"] == None:
         print("Num elements in dataset: ", get_num_elements_in_dataset(dataset))
@@ -95,8 +115,11 @@ def train_model(model, train_ds, val_ds, weights_path, num_epochs=None):
         ]
     )
 
+    return history
 
-def test_model(model, test_ds, min_class_label, max_class_label):
+
+
+def test_model(model, test_ds, min_class_label, max_class_label, confusion_graph_path=None):
     num_classes = max_class_label - min_class_label + 1
     test_Y_hat = model.predict(test_ds)
     conf = np.zeros([num_classes,num_classes])
@@ -120,14 +143,19 @@ def test_model(model, test_ds, min_class_label, max_class_label):
         counter += 1
 
     for i in range(0,num_classes):
-        confnorm[i,:] = conf[i,:] / np.sum(conf[i,:])
+        # This is normalizing the row into a percentage. If nothing was predicted for a row then this becomes 0 and needs to be not divided (uh yeh)
+        row_sum = np.sum(conf[i,:])
+        if row_sum != 0:
+            confnorm[i,:] = conf[i,:] / row_sum
+        else:
+            confnorm[i,:] = 0
+
 
     print("Correct: ", correct)
     print("Incorrect: ", incorrect)
     print("Accuracy: ", correct / (correct + incorrect))
-    print(conf)
     print(confnorm)
 
-    plot_confusion_matrix(confnorm, labels=list(range(min_class_label, max_class_label+1)))
-    # plt.savefig("confusion.png")
-    #plt.figure()
+    if confusion_graph_path != None:
+        plot_confusion_matrix(confnorm, labels=list(range(min_class_label, max_class_label+1)))
+        plt.savefig(confusion_graph_path)

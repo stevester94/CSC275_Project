@@ -24,121 +24,122 @@ window_size=288
 ########################################################################################################
 # Day 1 Equalized
 # Accuracy = 0.905040823571175
-# DATASET_SIZE=1126808
-# train_paths = [
-#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_9/tx_7/converted_576floats.protobin',
-#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_12/tx_3/converted_576floats.protobin',
-#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_12/tx_9/converted_576floats.protobin',
-#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_12/tx_6/converted_576floats.protobin',
-#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_12/tx_7/converted_576floats.protobin',
-#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_10/tx_5/converted_576floats.protobin',
-#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_11/tx_7/converted_576floats.protobin',
-#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_12/tx_10/converted_576floats.protobin',
-#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_9/tx_3/converted_576floats.protobin',
-#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_13/tx_7/converted_576floats.protobin',
-#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_10/tx_4/converted_576floats.protobin',
-#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_11/tx_2/converted_576floats.protobin',
-#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_10/tx_9/converted_576floats.protobin',
-#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_12/tx_2/converted_576floats.protobin',
-#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_10/tx_10/converted_576floats.protobin',
-#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_11/tx_8/converted_576floats.protobin',
-#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_10/tx_6/converted_576floats.protobin',
-#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_9/tx_6/converted_576floats.protobin',
-#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_11/tx_4/converted_576floats.protobin',
-#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_10/tx_8/converted_576floats.protobin',
-#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_12/tx_4/converted_576floats.protobin',
-#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_13/tx_9/converted_576floats.protobin',
-#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_12/tx_8/converted_576floats.protobin',
-#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_10/tx_7/converted_576floats.protobin',
-#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_13/tx_2/converted_576floats.protobin',
-#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_10/tx_3/converted_576floats.protobin',
-#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_9/tx_8/converted_576floats.protobin',
-#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_13/tx_3/converted_576floats.protobin',
-#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_11/tx_6/converted_576floats.protobin',
-#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_11/tx_5/converted_576floats.protobin',
-#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_13/tx_4/converted_576floats.protobin',
-#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_9/tx_1/converted_576floats.protobin',
-#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_10/tx_1/converted_576floats.protobin',
-#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_9/tx_4/converted_576floats.protobin',
-#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_11/tx_1/converted_576floats.protobin'
-# ]
 
-# test_paths = [
-#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_11/tx_3/converted_576floats.protobin',
-#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_13/tx_10/converted_576floats.protobin',
-#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_12/tx_1/converted_576floats.protobin',
-#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_13/tx_5/converted_576floats.protobin',
-#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_9/tx_5/converted_576floats.protobin',
-#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_13/tx_6/converted_576floats.protobin',
-#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_13/tx_1/converted_576floats.protobin',
-#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_11/tx_10/converted_576floats.protobin',
-#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_9/tx_10/converted_576floats.protobin',
-#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_10/tx_2/converted_576floats.protobin',
-#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_9/tx_2/converted_576floats.protobin',
-#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_12/tx_5/converted_576floats.protobin',
-#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_13/tx_8/converted_576floats.protobin',
-#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_9/tx_9/converted_576floats.protobin',
-#     '/mnt/lebensraum/Datasets/Day1.Equalized/Device_11/tx_9/converted_576floats.protobin'
-# ]
+# ds_config = {
+#     "size": 1126808,
+#     "cache_name": "day1.equalized",
+#     "paths": [
+#         '/mnt/lebensraum/Datasets/Day1.Equalized/Device_9/tx_7/converted_576floats.protobin',
+#         '/mnt/lebensraum/Datasets/Day1.Equalized/Device_12/tx_3/converted_576floats.protobin',
+#         '/mnt/lebensraum/Datasets/Day1.Equalized/Device_12/tx_9/converted_576floats.protobin',
+#         '/mnt/lebensraum/Datasets/Day1.Equalized/Device_12/tx_6/converted_576floats.protobin',
+#         '/mnt/lebensraum/Datasets/Day1.Equalized/Device_12/tx_7/converted_576floats.protobin',
+#         '/mnt/lebensraum/Datasets/Day1.Equalized/Device_10/tx_5/converted_576floats.protobin',
+#         '/mnt/lebensraum/Datasets/Day1.Equalized/Device_11/tx_7/converted_576floats.protobin',
+#         '/mnt/lebensraum/Datasets/Day1.Equalized/Device_12/tx_10/converted_576floats.protobin',
+#         '/mnt/lebensraum/Datasets/Day1.Equalized/Device_9/tx_3/converted_576floats.protobin',
+#         '/mnt/lebensraum/Datasets/Day1.Equalized/Device_13/tx_7/converted_576floats.protobin',
+#         '/mnt/lebensraum/Datasets/Day1.Equalized/Device_10/tx_4/converted_576floats.protobin',
+#         '/mnt/lebensraum/Datasets/Day1.Equalized/Device_11/tx_2/converted_576floats.protobin',
+#         '/mnt/lebensraum/Datasets/Day1.Equalized/Device_10/tx_9/converted_576floats.protobin',
+#         '/mnt/lebensraum/Datasets/Day1.Equalized/Device_12/tx_2/converted_576floats.protobin',
+#         '/mnt/lebensraum/Datasets/Day1.Equalized/Device_10/tx_10/converted_576floats.protobin',
+#         '/mnt/lebensraum/Datasets/Day1.Equalized/Device_11/tx_8/converted_576floats.protobin',
+#         '/mnt/lebensraum/Datasets/Day1.Equalized/Device_10/tx_6/converted_576floats.protobin',
+#         '/mnt/lebensraum/Datasets/Day1.Equalized/Device_9/tx_6/converted_576floats.protobin',
+#         '/mnt/lebensraum/Datasets/Day1.Equalized/Device_11/tx_4/converted_576floats.protobin',
+#         '/mnt/lebensraum/Datasets/Day1.Equalized/Device_10/tx_8/converted_576floats.protobin',
+#         '/mnt/lebensraum/Datasets/Day1.Equalized/Device_12/tx_4/converted_576floats.protobin',
+#         '/mnt/lebensraum/Datasets/Day1.Equalized/Device_13/tx_9/converted_576floats.protobin',
+#         '/mnt/lebensraum/Datasets/Day1.Equalized/Device_12/tx_8/converted_576floats.protobin',
+#         '/mnt/lebensraum/Datasets/Day1.Equalized/Device_10/tx_7/converted_576floats.protobin',
+#         '/mnt/lebensraum/Datasets/Day1.Equalized/Device_13/tx_2/converted_576floats.protobin',
+#         '/mnt/lebensraum/Datasets/Day1.Equalized/Device_10/tx_3/converted_576floats.protobin',
+#         '/mnt/lebensraum/Datasets/Day1.Equalized/Device_9/tx_8/converted_576floats.protobin',
+#         '/mnt/lebensraum/Datasets/Day1.Equalized/Device_13/tx_3/converted_576floats.protobin',
+#         '/mnt/lebensraum/Datasets/Day1.Equalized/Device_11/tx_6/converted_576floats.protobin',
+#         '/mnt/lebensraum/Datasets/Day1.Equalized/Device_11/tx_5/converted_576floats.protobin',
+#         '/mnt/lebensraum/Datasets/Day1.Equalized/Device_13/tx_4/converted_576floats.protobin',
+#         '/mnt/lebensraum/Datasets/Day1.Equalized/Device_9/tx_1/converted_576floats.protobin',
+#         '/mnt/lebensraum/Datasets/Day1.Equalized/Device_10/tx_1/converted_576floats.protobin',
+#         '/mnt/lebensraum/Datasets/Day1.Equalized/Device_9/tx_4/converted_576floats.protobin',
+#         '/mnt/lebensraum/Datasets/Day1.Equalized/Device_11/tx_1/converted_576floats.protobin',
+#         '/mnt/lebensraum/Datasets/Day1.Equalized/Device_11/tx_3/converted_576floats.protobin',
+#         '/mnt/lebensraum/Datasets/Day1.Equalized/Device_13/tx_10/converted_576floats.protobin',
+#         '/mnt/lebensraum/Datasets/Day1.Equalized/Device_12/tx_1/converted_576floats.protobin',
+#         '/mnt/lebensraum/Datasets/Day1.Equalized/Device_13/tx_5/converted_576floats.protobin',
+#         '/mnt/lebensraum/Datasets/Day1.Equalized/Device_9/tx_5/converted_576floats.protobin',
+#         '/mnt/lebensraum/Datasets/Day1.Equalized/Device_13/tx_6/converted_576floats.protobin',
+#         '/mnt/lebensraum/Datasets/Day1.Equalized/Device_13/tx_1/converted_576floats.protobin',
+#         '/mnt/lebensraum/Datasets/Day1.Equalized/Device_11/tx_10/converted_576floats.protobin',
+#         '/mnt/lebensraum/Datasets/Day1.Equalized/Device_9/tx_10/converted_576floats.protobin',
+#         '/mnt/lebensraum/Datasets/Day1.Equalized/Device_10/tx_2/converted_576floats.protobin',
+#         '/mnt/lebensraum/Datasets/Day1.Equalized/Device_9/tx_2/converted_576floats.protobin',
+#         '/mnt/lebensraum/Datasets/Day1.Equalized/Device_12/tx_5/converted_576floats.protobin',
+#         '/mnt/lebensraum/Datasets/Day1.Equalized/Device_13/tx_8/converted_576floats.protobin',
+#         '/mnt/lebensraum/Datasets/Day1.Equalized/Device_9/tx_9/converted_576floats.protobin',
+#         '/mnt/lebensraum/Datasets/Day1.Equalized/Device_11/tx_9/converted_576floats.protobin'
+#     ],
+# }
 
-########################################################################################################
+#######################################################################################################
 # Day 2 After FFT
-
-# train_paths = [
-#     '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_9/tx_7/converted_576floats.protobin',
-#     '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_13/tx_7/converted_576floats.protobin',
-#     '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_13/tx_4/converted_576floats.protobin',
-#     '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_9/tx_9/converted_576floats.protobin',
-#     '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_11/tx_3/converted_576floats.protobin',
-#     '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_13/tx_9/converted_576floats.protobin',
-#     '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_13/tx_8/converted_576floats.protobin',
-#     '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_12/tx_5/converted_576floats.protobin',
-#     '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_13/tx_1/converted_576floats.protobin',
-#     '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_9/tx_5/converted_576floats.protobin',
-#     '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_13/tx_6/converted_576floats.protobin',
-#     '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_12/tx_9/converted_576floats.protobin',
-#     '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_11/tx_8/converted_576floats.protobin',
-#     '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_11/tx_6/converted_576floats.protobin',
-#     '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_12/tx_3/converted_576floats.protobin',
-#     '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_12/tx_10/converted_576floats.protobin',
-#     '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_11/tx_4/converted_576floats.protobin',
-#     '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_12/tx_6/converted_576floats.protobin',
-#     '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_12/tx_4/converted_576floats.protobin',
-#     '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_11/tx_5/converted_576floats.protobin',
-#     '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_9/tx_3/converted_576floats.protobin',
-#     '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_9/tx_8/converted_576floats.protobin',
-#     '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_10/tx_10/converted_576floats.protobin',
-#     '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_10/tx_5/converted_576floats.protobin',
-#     '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_10/tx_8/converted_576floats.protobin',
-#     '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_11/tx_1/converted_576floats.protobin',
-#     '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_9/tx_6/converted_576floats.protobin',
-#     '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_10/tx_4/converted_576floats.protobin',
-#     '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_11/tx_7/converted_576floats.protobin',
-#     '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_13/tx_2/converted_576floats.protobin',
-#     '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_12/tx_1/converted_576floats.protobin',
-#     '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_9/tx_2/converted_576floats.protobin',
-#     '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_11/tx_10/converted_576floats.protobin',
-#     '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_10/tx_3/converted_576floats.protobin',
-#     '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_10/tx_7/converted_576floats.protobin'
-# ]
-
-# test_paths = [
-#     '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_10/tx_6/converted_576floats.protobin',
-#     '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_12/tx_7/converted_576floats.protobin',
-#     '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_10/tx_9/converted_576floats.protobin',
-#     '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_9/tx_10/converted_576floats.protobin',
-#     '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_10/tx_2/converted_576floats.protobin',
-#     '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_12/tx_2/converted_576floats.protobin',
-#     '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_13/tx_10/converted_576floats.protobin',
-#     '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_13/tx_5/converted_576floats.protobin',
-#     '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_11/tx_2/converted_576floats.protobin',
-#     '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_11/tx_9/converted_576floats.protobin',
-#     '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_12/tx_8/converted_576floats.protobin',
-#     '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_13/tx_3/converted_576floats.protobin',
-#     '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_10/tx_1/converted_576floats.protobin',
-#     '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_9/tx_4/converted_576floats.protobin',
-#     '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_9/tx_1/converted_576floats.protobin'
-# ]
+ds_config = {
+    "size": 13920090,
+    "cache_name": "day2.fft",
+    "paths": [
+        '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_9/tx_7/converted_576floats.protobin',
+        '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_13/tx_7/converted_576floats.protobin',
+        '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_13/tx_4/converted_576floats.protobin',
+        '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_9/tx_9/converted_576floats.protobin',
+        '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_11/tx_3/converted_576floats.protobin',
+        '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_13/tx_9/converted_576floats.protobin',
+        '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_13/tx_8/converted_576floats.protobin',
+        '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_12/tx_5/converted_576floats.protobin',
+        '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_13/tx_1/converted_576floats.protobin',
+        '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_9/tx_5/converted_576floats.protobin',
+        '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_13/tx_6/converted_576floats.protobin',
+        '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_12/tx_9/converted_576floats.protobin',
+        '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_11/tx_8/converted_576floats.protobin',
+        '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_11/tx_6/converted_576floats.protobin',
+        '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_12/tx_3/converted_576floats.protobin',
+        '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_12/tx_10/converted_576floats.protobin',
+        '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_11/tx_4/converted_576floats.protobin',
+        '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_12/tx_6/converted_576floats.protobin',
+        '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_12/tx_4/converted_576floats.protobin',
+        '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_11/tx_5/converted_576floats.protobin',
+        '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_9/tx_3/converted_576floats.protobin',
+        '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_9/tx_8/converted_576floats.protobin',
+        '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_10/tx_10/converted_576floats.protobin',
+        '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_10/tx_5/converted_576floats.protobin',
+        '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_10/tx_8/converted_576floats.protobin',
+        '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_11/tx_1/converted_576floats.protobin',
+        '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_9/tx_6/converted_576floats.protobin',
+        '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_10/tx_4/converted_576floats.protobin',
+        '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_11/tx_7/converted_576floats.protobin',
+        '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_13/tx_2/converted_576floats.protobin',
+        '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_12/tx_1/converted_576floats.protobin',
+        '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_9/tx_2/converted_576floats.protobin',
+        '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_11/tx_10/converted_576floats.protobin',
+        '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_10/tx_3/converted_576floats.protobin',
+        '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_10/tx_7/converted_576floats.protobin',
+        '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_10/tx_6/converted_576floats.protobin',
+        '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_12/tx_7/converted_576floats.protobin',
+        '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_10/tx_9/converted_576floats.protobin',
+        '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_9/tx_10/converted_576floats.protobin',
+        '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_10/tx_2/converted_576floats.protobin',
+        '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_12/tx_2/converted_576floats.protobin',
+        '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_13/tx_10/converted_576floats.protobin',
+        '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_13/tx_5/converted_576floats.protobin',
+        '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_11/tx_2/converted_576floats.protobin',
+        '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_11/tx_9/converted_576floats.protobin',
+        '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_12/tx_8/converted_576floats.protobin',
+        '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_13/tx_3/converted_576floats.protobin',
+        '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_10/tx_1/converted_576floats.protobin',
+        '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_9/tx_4/converted_576floats.protobin',
+        '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_9/tx_1/converted_576floats.protobin'
+    ],
+}
 
 ########################################################################################################
 # Day 2 Equalized (For testing)
@@ -146,8 +147,7 @@ window_size=288
 # ds_config = {
 #     "size":751428,
 #     "cache_name": "day_2_equalized",
-#     "train_paths":[],
-#     "test_paths": [
+#     "paths": [
 #         "/mnt/lebensraum/Datasets/Day2.Equalized/Device_11/tx_6/converted_576floats.protobin",
 #         "/mnt/lebensraum/Datasets/Day2.Equalized/Device_11/tx_3/converted_576floats.protobin",
 #         "/mnt/lebensraum/Datasets/Day2.Equalized/Device_11/tx_1/converted_576floats.protobin",
@@ -203,31 +203,30 @@ window_size=288
 
 ########################################################################################################
 # A ds_config for fuckin around
-ds_config = {
-    "size":263202,
-    "cache_name": "fuckin_around",
-    "train_paths":[],
-    "test_paths": [
-        "/mnt/lebensraum/Datasets/Day2.Equalized/Device_11/tx_6/converted_576floats.protobin",
-        "/mnt/lebensraum/Datasets/Day2.Equalized/Device_11/tx_3/converted_576floats.protobin",
-        "/mnt/lebensraum/Datasets/Day2.Equalized/Device_11/tx_1/converted_576floats.protobin",
-        "/mnt/lebensraum/Datasets/Day2.Equalized/Device_11/tx_10/converted_576floats.protobin",
-        "/mnt/lebensraum/Datasets/Day2.Equalized/Device_13/tx_2/converted_576floats.protobin",
-        "/mnt/lebensraum/Datasets/Day2.Equalized/Device_13/tx_5/converted_576floats.protobin",
-        "/mnt/lebensraum/Datasets/Day2.Equalized/Device_13/tx_8/converted_576floats.protobin",
-        "/mnt/lebensraum/Datasets/Day2.Equalized/Device_13/tx_9/converted_576floats.protobin",
-        "/mnt/lebensraum/Datasets/Day2.Equalized/Device_9/tx_6/converted_576floats.protobin",
-        "/mnt/lebensraum/Datasets/Day2.Equalized/Device_9/tx_3/converted_576floats.protobin",
-        "/mnt/lebensraum/Datasets/Day2.Equalized/Device_9/tx_1/converted_576floats.protobin",
-        "/mnt/lebensraum/Datasets/Day2.Equalized/Device_9/tx_10/converted_576floats.protobin",
-        "/mnt/lebensraum/Datasets/Day2.Equalized/Device_9/tx_7/converted_576floats.protobin",
-        "/mnt/lebensraum/Datasets/Day2.Equalized/Device_9/tx_4/converted_576floats.protobin",
-        "/mnt/lebensraum/Datasets/Day2.Equalized/Device_9/tx_2/converted_576floats.protobin",
-        "/mnt/lebensraum/Datasets/Day2.Equalized/Device_9/tx_5/converted_576floats.protobin",
-        "/mnt/lebensraum/Datasets/Day2.Equalized/Device_9/tx_8/converted_576floats.protobin",
-        "/mnt/lebensraum/Datasets/Day2.Equalized/Device_9/tx_9/converted_576floats.protobin",
-    ],
-}
+# ds_config = {
+#     "size":263202,
+#     "cache_name": "fuckin_around",
+#     "paths": [
+#         "/mnt/lebensraum/Datasets/Day2.Equalized/Device_11/tx_6/converted_576floats.protobin",
+#         "/mnt/lebensraum/Datasets/Day2.Equalized/Device_11/tx_3/converted_576floats.protobin",
+#         "/mnt/lebensraum/Datasets/Day2.Equalized/Device_11/tx_1/converted_576floats.protobin",
+#         "/mnt/lebensraum/Datasets/Day2.Equalized/Device_11/tx_10/converted_576floats.protobin",
+#         "/mnt/lebensraum/Datasets/Day2.Equalized/Device_13/tx_2/converted_576floats.protobin",
+#         "/mnt/lebensraum/Datasets/Day2.Equalized/Device_13/tx_5/converted_576floats.protobin",
+#         "/mnt/lebensraum/Datasets/Day2.Equalized/Device_13/tx_8/converted_576floats.protobin",
+#         "/mnt/lebensraum/Datasets/Day2.Equalized/Device_13/tx_9/converted_576floats.protobin",
+#         "/mnt/lebensraum/Datasets/Day2.Equalized/Device_9/tx_6/converted_576floats.protobin",
+#         "/mnt/lebensraum/Datasets/Day2.Equalized/Device_9/tx_3/converted_576floats.protobin",
+#         "/mnt/lebensraum/Datasets/Day2.Equalized/Device_9/tx_1/converted_576floats.protobin",
+#         "/mnt/lebensraum/Datasets/Day2.Equalized/Device_9/tx_10/converted_576floats.protobin",
+#         "/mnt/lebensraum/Datasets/Day2.Equalized/Device_9/tx_7/converted_576floats.protobin",
+#         "/mnt/lebensraum/Datasets/Day2.Equalized/Device_9/tx_4/converted_576floats.protobin",
+#         "/mnt/lebensraum/Datasets/Day2.Equalized/Device_9/tx_2/converted_576floats.protobin",
+#         "/mnt/lebensraum/Datasets/Day2.Equalized/Device_9/tx_5/converted_576floats.protobin",
+#         "/mnt/lebensraum/Datasets/Day2.Equalized/Device_9/tx_8/converted_576floats.protobin",
+#         "/mnt/lebensraum/Datasets/Day2.Equalized/Device_9/tx_9/converted_576floats.protobin",
+#     ],
+# }
 
 
 def tf_to_onehot(samples,device_id,_1,_2):
@@ -256,11 +255,11 @@ def ds_config_to_datasets(ds_config):
 
 def train_model(model, ds_config, weights_path):
     datasets = ds_config_to_datasets(ds_config)
-    model_utils.train_model(model, datasets["train"], datasets["val"], weights_path, num_epochs=1)
+    return model_utils.train_model(model, datasets["train"], datasets["val"], weights_path, num_epochs=5)
 
 def test_model(model, ds_config):
     datasets = ds_config_to_datasets(ds_config)
-    model_utils.test_model(model, datasets["test"], MIN_CLASS_LABEL, MAX_CLASS_LABEL) 
+    model_utils.test_model(model, datasets["test"], MIN_CLASS_LABEL, MAX_CLASS_LABEL, "muh_confusion.png") 
 
 def build_model():
     # I've been living a lie. The IQ samples have been flat this entire time. Just a stream of IQ
@@ -355,13 +354,15 @@ def build_model():
 
     return model
 
+history = None
 
 if __name__ == "__main__":
     model = build_model()
 
     # <test|train> <weights path>
     if sys.argv[1] == "train":
-        train_model(model, ds_config, sys.argv[2])
+        history = train_model(model, ds_config, sys.argv[2])
+        model_utils.plot_loss_curve(history, "muh_loss.png")
     if sys.argv[1] == "test":
         model.load_weights(sys.argv[2])
         test_model(model, ds_config)
