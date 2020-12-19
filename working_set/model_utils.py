@@ -78,6 +78,7 @@ def plot_loss_curve(history, path):
     plt.plot(history.epoch, history.history['loss'], label='train loss+error')
     plt.plot(history.epoch, history.history['val_loss'], label='val_error')
     plt.legend()
+    plt.xlabel('Epoch')
 
     plt.savefig(path)
 
@@ -111,7 +112,7 @@ def train_model(model, train_ds, val_ds, weights_path, num_epochs=None):
         validation_data=val_ds,
         callbacks = [
             keras.callbacks.ModelCheckpoint(weights_path, monitor='val_loss', verbose=0, save_best_only=True, mode='auto'),
-            keras.callbacks.EarlyStopping(monitor='val_loss', patience=5, verbose=0, mode='auto')
+            keras.callbacks.EarlyStopping(monitor='val_loss', patience=10, verbose=0, mode='auto')
         ]
     )
 
