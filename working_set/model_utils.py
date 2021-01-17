@@ -112,7 +112,7 @@ def train_model(model, train_ds, val_ds, weights_path, num_epochs=None):
         validation_data=val_ds,
         callbacks = [
             keras.callbacks.ModelCheckpoint(weights_path, monitor='val_loss', verbose=0, save_best_only=True, mode='auto'),
-            keras.callbacks.EarlyStopping(monitor='val_loss', patience=10, verbose=0, mode='auto')
+            keras.callbacks.EarlyStopping(monitor='val_loss', patience=7, verbose=0, mode='auto')
         ]
     )
 

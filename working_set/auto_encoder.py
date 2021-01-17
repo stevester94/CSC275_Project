@@ -80,6 +80,18 @@ def ds_config_to_datasets(ds_config):
         lambda paths: build_auto_encoder_ds(paths)
     )
 
+def build_cache(ds_config):
+    datasets = ds_config_to_datasets(ds_config)
+
+    print("Populating training set")
+    get_num_elements_in_dataset(datasets["train"])
+
+    print("Populating test set")
+    get_num_elements_in_dataset(datasets["test"])
+    
+    print("Populating val set")
+    get_num_elements_in_dataset(datasets["val"])
+
 def train_model(model, ds_config, weights_path):
     datasets = ds_config_to_datasets(ds_config)
     return model_utils.train_model(model, datasets["train"], datasets["val"], weights_path, num_epochs=100)

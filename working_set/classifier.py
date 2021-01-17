@@ -141,9 +141,40 @@ window_size=288
 #     ],
 # }
 
+#######################################################################################################
+# FFT limited subset
+# Populated
+# ds_config = {
+#     "size": 1800003,   
+#     "cache_name": "day2.fft.limited",
+#     "paths": [  
+#         '/mnt/lebensraum/Datasets/Day1.Equalized/Device_10/tx_5/converted_576floats.protobin',
+#         '/mnt/lebensraum/Datasets/Day1.Equalized/Device_10/tx_4/converted_576floats.protobin',
+#         '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_11/tx_3/converted_576floats.protobin',
+#         '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_11/tx_8/converted_576floats.protobin',
+#         '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_12/tx_10/converted_576floats.protobin',
+#         '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_12/tx_4/converted_576floats.protobin',
+#         '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_13/tx_1/converted_576floats.protobin',
+#         '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_13/tx_9/converted_576floats.protobin',
+#     ],
+# }
+
+#######################################################################################################
+# Day 2 Device 9 Only
+ds_config = {
+    "size": 1451369,
+    "cache_name": "day2.fft.dev9_only",
+    "paths": [
+        '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_9/tx_7/converted_576floats.protobin',
+        '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_9/tx_9/converted_576floats.protobin',
+        '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_9/tx_5/converted_576floats.protobin',
+        '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_9/tx_3/converted_576floats.protobin',
+    ],
+}
+
 ########################################################################################################
 # Day 2 Equalized (For testing)
-# Accuracy = 0.732852465997711 when used with Day 1 weights (vs )
+# Accuracy = 0.72 (Confirmed) when used with Day 1 weights (vs )
 # ds_config = {
 #     "size":751428,
 #     "cache_name": "day_2_equalized",
@@ -255,7 +286,7 @@ def ds_config_to_datasets(ds_config):
 
 def train_model(model, ds_config, weights_path):
     datasets = ds_config_to_datasets(ds_config)
-    return model_utils.train_model(model, datasets["train"], datasets["val"], weights_path, num_epochs=5)
+    return model_utils.train_model(model, datasets["train"], datasets["val"], weights_path, num_epochs=100)
 
 def test_model(model, ds_config):
     datasets = ds_config_to_datasets(ds_config)
@@ -356,7 +387,24 @@ def build_model():
 
 history = None
 
+def build_cache(ds_config):
+    datasets = ds_config_to_datasets(ds_config)
+
+    print("Populating training set")
+    get_num_elements_in_dataset(datasets["train"])
+
+    print("Populating test set")
+    get_num_elements_in_dataset(datasets["test"])
+    
+    print("Populating val set")
+    get_num_elements_in_dataset(datasets["val"])
+
 if __name__ == "__main__":
+    
+    if sys.argv[1] == "cache":
+        build_cache(ds_config)
+        sys.exit(0)
+
     model = build_model()
 
     # <test|train> <weights path>
@@ -366,3 +414,4 @@ if __name__ == "__main__":
     if sys.argv[1] == "test":
         model.load_weights(sys.argv[2])
         test_model(model, ds_config)
+    

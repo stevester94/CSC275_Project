@@ -16,17 +16,37 @@ import classifier
 
 tf.random.set_seed(1337)
 
-test_paths = [
-    "/mnt/lebensraum/Datasets/Day2.After_FFT/Device_9/tx_1/converted_576floats.protobin"
-]
+#######################################################################################################
+# FFT limited subset
+# Populated
+# ds_config = {
+#     "size": 1800003,   
+#     "cache_name": "day2.fft.limited",
+#     "paths": [  
+#         '/mnt/lebensraum/Datasets/Day1.Equalized/Device_10/tx_5/converted_576floats.protobin',
+#         '/mnt/lebensraum/Datasets/Day1.Equalized/Device_10/tx_4/converted_576floats.protobin',
+#         '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_11/tx_3/converted_576floats.protobin',
+#         '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_11/tx_8/converted_576floats.protobin',
+#         '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_12/tx_10/converted_576floats.protobin',
+#         '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_12/tx_4/converted_576floats.protobin',
+#         '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_13/tx_1/converted_576floats.protobin',
+#         '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_13/tx_9/converted_576floats.protobin',
+#     ],
+# }
 
-# classifier_test_paths = [
-#     "/kek/Day_1_Equalized/Device_10/tx_10/converted_576floats.protobin",
-#     "/kek/Day_1_Equalized/Device_9/tx_10/converted_576floats.protobin", 
-# ]
+ds_config = {
+    "size": 1451369,
+    "cache_name": "day2.fft.dev9_only",
+    "paths": [
+        '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_9/tx_7/converted_576floats.protobin',
+        '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_9/tx_9/converted_576floats.protobin',
+        '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_9/tx_5/converted_576floats.protobin',
+        '/mnt/lebensraum/Datasets/Day2.After_FFT/Device_9/tx_3/converted_576floats.protobin',
+    ],
+}
 
-encoder_weights_path = "/mnt/lebensraum/CSC275_Project/working_set/encoder.shuffled/encoder.wts.h5"
-classifier_weights_path = "/mnt/lebensraum/CSC275_Project/working_set/classifier.day1.equalized.shuffled/classifier.wts.h5"
+encoder_weights_path = "/mnt/lebensraum/CSC275_Project/working_set/golden_weights/encoder.objective.wts.h5"
+classifier_weights_path = "/mnt/lebensraum/CSC275_Project/working_set/golden_weights/classifier.objective.wts.h5"
 
 the_encoder = auto_encoder.build_model()
 the_encoder.load_weights(encoder_weights_path)
@@ -42,6 +62,6 @@ stack_layers = the_classifier(stack_layers)
 the_stack = tf.keras.Model(inputs=stack_input, outputs=stack_layers)
 the_stack.summary()
 
-classifier.test_model(the_stack, "stack_workspace", test_paths)
+classifier.test_model(the_stack, ds_config)
 
 # classifier.test_model(the_classifier, classifier_test_paths)
